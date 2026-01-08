@@ -1,0 +1,51 @@
+{% extends 'frontend/base.html' %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 24px auto;">
+  <h1>Welcome, {{ user.username }}</h1>
+
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0;">
+    <div class="card"><div class="card-body"><strong>Open</strong><div>{{ metrics.open }}</div></div></div>
+    <div class="card"><div class="card-body"><strong>Completed</strong><div>{{ metrics.completed }}</div></div></div>
+    <div class="card"><div class="card-body"><strong>Cancelled</strong><div>{{ metrics.cancelled }}</div></div></div>
+  </div>
+
+  <h2>My Bookings</h2>
+  <table class="table">
+    <thead>
+      <tr><th>ID</th><th>Service</th><th>Provider</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for b in bookings %}
+      <tr>
+        <td>#{{ b.id }}</td>
+        <td>{{ b.service.title }}</td>
+        <td>{{ b.provider.business_name }}</td>
+        <td>{{ b.booking_date }}</td>
+        <td>{{ b.booking_time }}</td>
+        <td>{{ b.get_status_display }}</td>
+        <td>
+          {% if b.status == 'pending' or b.status == 'confirmed' %}
+          <form method="post" action="{% url 'customer_cancel_booking' b.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-danger">Cancel</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="7">No bookings yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>My Requests</h2>
+  <ul>
+    {% for r in requests %}
+      <li>#{{ r.id }} — {{ r.title }} ({{ r.get_status_display }})</li>
+    {% empty %}
+      <li>No service requests.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

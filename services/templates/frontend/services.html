@@ -1,0 +1,396 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}{% if selected_category %}{{ selected_category.name }} Services{% else %}Browse Services{% endif %} - HomeServe PRO{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: 
+            url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&h=1080&fit=crop&crop=center&q=80') center/cover no-repeat fixed;
+        position: relative;
+        min-height: 100vh;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            linear-gradient(45deg, transparent 49%, rgba(148, 163, 184, 0.02) 49.5%, rgba(148, 163, 184, 0.02) 50.5%, transparent 51%),
+            linear-gradient(-45deg, transparent 49%, rgba(148, 163, 184, 0.015) 49.5%, rgba(148, 163, 184, 0.015) 50.5%, transparent 51%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.82) 50%, rgba(241, 245, 249, 0.80) 100%);
+        background-size: 60px 60px, 40px 40px, 100% 100%;
+        z-index: -1;
+        opacity: 0.9;
+    }
+    
+    .page-header {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        padding: 80px 20px 60px;
+        text-align: center;
+        color: #1e293b;
+        border-bottom: 1px solid #e2e8f0;
+        position: relative;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            linear-gradient(45deg, transparent 49%, rgba(148, 163, 184, 0.02) 49.5%, rgba(148, 163, 184, 0.02) 50.5%, transparent 51%),
+            linear-gradient(-45deg, transparent 49%, rgba(148, 163, 184, 0.015) 49.5%, rgba(148, 163, 184, 0.015) 50.5%, transparent 51%);
+        background-size: 40px 40px;
+        z-index: 0;
+    }
+    
+    .page-header > * {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .page-header h1 {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #1e293b;
+        letter-spacing: -0.02em;
+    }
+    
+    .page-header p {
+        font-size: 1.1rem;
+        color: #64748b;
+        font-weight: 400;
+        margin: 0;
+    }
+    
+    .filters-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 32px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin: 0;
+        width: 100%;
+        position: relative;
+    }
+
+    /* Two-column layout: filters sidebar + services list */
+    .listing-grid {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
+
+    @media (max-width: 900px) {
+        .listing-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filters-section {
+            margin-bottom: 20px;
+        }
+    }
+    
+    .filter-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+    
+    .filter-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #334155;
+    }
+    
+    .filter-group input,
+    .filter-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    
+    .filter-actions {
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .filter-actions .btn {
+        width: 100%;
+    }
+    
+    .services-container {
+        padding: 0;
+    }
+    
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+    
+    .service-card {
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        position: relative;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.98);
+        border-color: rgba(203, 213, 225, 0.5);
+    }
+    
+    .service-card h3 {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+        color: #1e293b;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+    
+    .service-description {
+        color: #64748b;
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+    
+    .service-meta {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+        margin: 15px 0;
+    }
+    
+    .service-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 16px 0;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .provider-info {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin: 12px 0;
+        font-weight: 500;
+    }
+    
+    .emergency-badge {
+        display: inline-block;
+        background: #dc2626;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 50px;
+    }
+    
+    .pagination a,
+    .pagination span {
+        padding: 10px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #64748b;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .pagination a:hover {
+        background: #f1f5f9;
+        color: #1e293b;
+        border-color: #cbd5e1;
+    }
+    
+    .pagination .current {
+        background: #1e293b;
+        color: white;
+        border-color: #1e293b;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>{% if selected_category %}{{ selected_category.name }} Services{% else %}Browse Services{% endif %}</h1>
+        <p>Find the perfect professional for your home needs</p>
+    </div>
+</section>
+
+<div class="container">
+    <div class="listing-grid">
+        <div class="filters-section">
+            <form method="get" action="/services/" class="filter-form">
+            <div class="filter-group">
+                <label>Search</label>
+                <input type="text" name="q" placeholder="Search services..." value="{% if filters.search %}{{ filters.search }}{% endif %}">
+            </div>
+            
+            <div class="filter-group">
+                <label>Category</label>
+                <select name="category">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if filters.category == cat.id|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>District</label>
+                <select name="district">
+                    <option value="">All Districts</option>
+                    <option value="Thiruvananthapuram" {% if filters.district == 'Thiruvananthapuram' %}selected{% endif %}>Thiruvananthapuram</option>
+                    <option value="Kollam" {% if filters.district == 'Kollam' %}selected{% endif %}>Kollam</option>
+                    <option value="Pathanamthitta" {% if filters.district == 'Pathanamthitta' %}selected{% endif %}>Pathanamthitta</option>
+                    <option value="Alappuzha" {% if filters.district == 'Alappuzha' %}selected{% endif %}>Alappuzha</option>
+                    <option value="Kottayam" {% if filters.district == 'Kottayam' %}selected{% endif %}>Kottayam</option>
+                    <option value="Idukki" {% if filters.district == 'Idukki' %}selected{% endif %}>Idukki</option>
+                    <option value="Ernakulam" {% if filters.district == 'Ernakulam' %}selected{% endif %}>Ernakulam</option>
+                    <option value="Thrissur" {% if filters.district == 'Thrissur' %}selected{% endif %}>Thrissur</option>
+                    <option value="Palakkad" {% if filters.district == 'Palakkad' %}selected{% endif %}>Palakkad</option>
+                    <option value="Malappuram" {% if filters.district == 'Malappuram' %}selected{% endif %}>Malappuram</option>
+                    <option value="Kozhikode" {% if filters.district == 'Kozhikode' %}selected{% endif %}>Kozhikode</option>
+                    <option value="Wayanad" {% if filters.district == 'Wayanad' %}selected{% endif %}>Wayanad</option>
+                    <option value="Kannur" {% if filters.district == 'Kannur' %}selected{% endif %}>Kannur</option>
+                    <option value="Kasaragod" {% if filters.district == 'Kasaragod' %}selected{% endif %}>Kasaragod</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Price Range</label>
+                <select name="price">
+                    <option value="">Any Price</option>
+                    <option value="0-500" {% if filters.price == '0-500' %}selected{% endif %}>Under ₹500</option>
+                    <option value="500-1000" {% if filters.price == '500-1000' %}selected{% endif %}>₹500 - ₹1000</option>
+                    <option value="1000-2000" {% if filters.price == '1000-2000' %}selected{% endif %}>₹1000 - ₹2000</option>
+                    <option value="2000-5000" {% if filters.price == '2000-5000' %}selected{% endif %}>₹2000 - ₹5000</option>
+                    <option value="5000+" {% if filters.price == '5000+' %}selected{% endif %}>Above ₹5000</option>
+                </select>
+            </div>
+            
+            <div class="filter-actions">
+                <a href="/services/" class="btn btn-secondary">Clear Filters</a>
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="services-container">
+        <div class="results-header">
+            <h2>{{ services.paginator.count }} service{{ services.paginator.count|pluralize }} found</h2>
+        </div>
+        
+        {% if services %}
+        <div class="services-grid">
+            {% for service in services %}
+            <a href="/service/{{ service.id }}/" class="service-card">
+                {% if service.is_emergency_available %}
+                <span class="emergency-badge">⚡ Emergency Available</span>
+                {% endif %}
+                
+                <h3>{{ service.title }}</h3>
+                <p class="service-description">{{ service.description|truncatewords:20 }}</p>
+                
+                <div class="provider-info">
+                    <i class="fas fa-user"></i> {{ service.provider.business_name }}
+                </div>
+                
+                <div class="service-meta">
+                    <span><i class="fas fa-clock"></i> {{ service.duration_minutes }} min</span>
+                    <span><i class="fas fa-tag"></i> {{ service.get_pricing_type_display }}</span>
+                </div>
+                
+                <div class="service-price">₹{{ service.price }}</div>
+                
+                <button class="btn btn-outline" style="width: 100%; margin-top: 16px; padding: 12px; border: 1px solid #e2e8f0; background: #f8fafc; color: #475569; border-radius: 8px; font-weight: 500; transition: all 0.2s;">View Details & Book</button>
+            </a>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if services.has_other_pages %}
+        <div class="pagination">
+            {% if services.has_previous %}
+                <a href="?page=1{% for key, value in filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo; First</a>
+                <a href="?page={{ services.previous_page_number }}{% for key, value in filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+            {% endif %}
+            
+            <span class="current">Page {{ services.number }} of {{ services.paginator.num_pages }}</span>
+            
+            {% if services.has_next %}
+                <a href="?page={{ services.next_page_number }}{% for key, value in filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                <a href="?page={{ services.paginator.num_pages }}{% for key, value in filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Last &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="no-results">
+            <i class="fas fa-search" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+            <h3>No services found</h3>
+            <p>Try adjusting your filters or search criteria</p>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+</div>
+{% endblock %}

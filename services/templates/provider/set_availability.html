@@ -1,0 +1,69 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Set Availability - Provider Portal{% endblock %}
+{% block content %}
+<style>
+body { 
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%),
+                url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80') center/cover fixed;
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 100vh;
+}
+.provider-portal { max-width: 800px; margin: 0 auto; padding: 30px 20px; }
+.section-card { background: white; padding: 32px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 28px; border: 1px solid #e5e7eb; }
+.section-title { font-size: 1.5em; margin-bottom: 24px; color: #1e293b; font-weight: 600; }
+.day-row { padding: 15px; border-bottom: 1px solid #e5e7eb; display: grid; grid-template-columns: 150px 1fr; gap: 20px; align-items: center; }
+.day-row:last-child { border-bottom: none; }
+.checkbox-label { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #1e293b; }
+.time-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.time-inputs input { padding: 10px; border: 1px solid #e5e7eb; border-radius: 6px; }
+.btn { padding: 12px 28px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.2s ease; font-size: 0.95em; margin-right: 10px; }
+.btn-primary { background: #1e40af; color: white; }
+.btn-primary:hover { background: #1e3a8a; }
+.btn-secondary { background: #64748b; color: white; }
+.btn-secondary:hover { background: #475569; }
+.alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; }
+.alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #059669; }
+</style>
+
+<div class="provider-portal">
+    <div class="section-card">
+        <h1 class="section-title">Set Weekly Availability</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for day in "0123456" %}
+            <div class="day-row">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="available_{{ day }}" id="available_{{ day }}">
+                    {% if day == "0" %}Monday
+                    {% elif day == "1" %}Tuesday
+                    {% elif day == "2" %}Wednesday
+                    {% elif day == "3" %}Thursday
+                    {% elif day == "4" %}Friday
+                    {% elif day == "5" %}Saturday
+                    {% elif day == "6" %}Sunday
+                    {% endif %}
+                </label>
+                <div class="time-inputs">
+                    <input type="time" name="start_time_{{ day }}" value="09:00" placeholder="Start Time">
+                    <input type="time" name="end_time_{{ day }}" value="18:00" placeholder="End Time">
+                </div>
+            </div>
+            {% endfor %}
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                <button type="submit" class="btn btn-primary">Save Availability</button>
+                <a href="/provider/calendar/" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

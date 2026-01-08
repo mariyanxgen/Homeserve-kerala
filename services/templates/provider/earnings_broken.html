@@ -1,0 +1,151 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Earn in gs-ProviderPortal{% endblock %}
+{% block content %}
+<style>
+body{background:#f8fafc;font-family:'TimesNewRoman',Times,serif;m in -height:100vh;}
+.provider-portal{max-width:1400px;marg in :0auto;padd in g:30px20px;}
+.nav-tabs{display:flex;gap:8px;background:white;padd in g:12px;border-radius:12px;marg in -bottom:30px;box-shadow:01px3pxrgba(0,0,0,0.1);border:1pxsolid#e5e7eb;}
+.nav-tabsa{padd in g:12px24px;background:transparent;border-radius:8px;text-decoration:none;color:#64748b;font-weight:600;transition:all0.2sease;font-size:0.95em;}
+.nav-tabsa:hover{background:#f1f5f9;color:#334155;}
+.nav-tabsa.active{background:#1e40af;color:white;}
+.section-card{background:white;padd in g:32px;border-radius:12px;box-shadow:01px3pxrgba(0,0,0,0.1);marg in -bottom:28px;border:1pxsolid#e5e7eb;}
+.section-title{font-size:1.5em;marg in -bottom:24px;color:#1e293b;font-weight:600;}
+.stat-value{font-size:2.8em;font-weight:700;color:#1e40af;marg in :12px08px0;}
+.stat-label{color:#64748b;font-size:0.95em;font-weight:500;}
+.badge{display: in l in e-block;padd in g:6px14px;border-radius:6px;font-size:0.85em;font-weight:600;}
+.badge-pend in g{background:#fef3c7;color:#92400e;}
+.badge-confirmed{background:#d1fae5;color:#065f46;}
+.badge-completed{background:#dbeafe;color:#1e40af;}
+.badge-cancelled{background:#fee2e2;color:#991b1b;}
+.btn{padd in g:10px20px;border:none;border-radius:8px;cursor:po in ter;font-weight:600;text-decoration:none;display: in l in e-block;transition:all0.2sease;font-size:0.95em;marg in -right:10px;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:#1e40af;color:white;}
+.btn-primary:hover{background:#1e3a8a;}
+.btn-success{background:#059669;color:white;}
+.btn-success:hover{background:#047857;}
+.btn-danger{background:#dc2626;color:white;}
+.btn-danger:hover{background:#b91c1c;}
+.btn-secondary{background:#64748b;color:white;}
+.btn-secondary:hover{background:#475569;}
+</style>
+
+<div class="provider-portal">
+<!--Navigation-->
+<div class="nav-tabs">
+<a href="/provider/">Home</a>
+<a href="/provider/services/">MyServices</a>
+<a href="/provider/book in gs/">Book in gs</a>
+<a href="/provider/earn in gs/"class="active">Earn in gs</a>
+<a href="/provider/messages/">Messages</a>
+<a href="/provider/calendar/">Calendar</a>
+<a href="/provider/reviews/">⭐Reviews</a>
+<a href="/provider/profile/">️Profile</a>
+</div>
+
+<!--Earn in gsCards-->
+<div class="earn in gs-grid">
+<div class="earn in g-card"style="background:l in ear-gradient(135deg,#1e40af0%,#764ba2100%);">
+<div class="earn in g-label">TotalEarn in gs</div>
+<div class="earn in g-value">₹{{ total_earn in gs|floatformat:0 }}</div>
+<divstyle="opacity:0.9;">Alltimerevenue</div>
+</div>
+<div class="earn in g-card"style="background:l in ear-gradient(135deg,#10b9810%,#059669100%);">
+<div class="earn in g-label">ThisMonth</div>
+<div class="earn in g-value">₹{{ month_earn in gs|floatformat:0 }}</div>
+<divstyle="opacity:0.9;">{{ month_book in gs }}book in g{{ month_book in gs|pluralize }}</div>
+</div>
+<div class="earn in g-card"style="background:l in ear-gradient(135deg,#fbbf240%,#f59e0b100%);">
+<div class="earn in g-label">ThisWeek</div>
+<div class="earn in g-value">₹{{ week_earn in gs|floatformat:0 }}</div>
+<divstyle="opacity:0.9;">{{ week_book in gs }}book in g{{ week_book in gs|pluralize }}</div>
+</div>
+</div>
+
+<!--PerformanceStats-->
+<div class="section-card">
+<h2 class="section-title">PerformanceStats</h2>
+<divstyle="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+<divstyle="text-align:center;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="font-size:2.5em;font-weight:bold;color:#1e40af;">{{ total_book in gs }}</div>
+<divstyle="color:#666;marg in -top:8px;">TotalBook in gs</div>
+</div>
+<divstyle="text-align:center;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="font-size:2.5em;font-weight:bold;color:#10b981;">₹{{ avg_book in g_value|floatformat:0 }}</div>
+<divstyle="color:#666;marg in -top:8px;">Avg.Book in gValue</div>
+</div>
+<divstyle="text-align:center;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="font-size:2.5em;font-weight:bold;color:#fbbf24;">{{ completed_book in gs }}</div>
+<divstyle="color:#666;marg in -top:8px;">Completed</div>
+</div>
+<divstyle="text-align:center;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="font-size:2.5em;font-weight:bold;color:#1e40af;">⭐{{ provider.rat in g|floatformat:1 }}</div>
+<divstyle="color:#666;marg in -top:8px;">YourRat in g</div>
+</div>
+</div>
+</div>
+
+<!--RecentTransactions-->
+<div class="section-card">
+<h2 class="section-title">RecentEarn in gs</h2>
+{% if earn in gs %}
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Service</th>
+<th>Customer</th>
+<th>Amount</th>
+<th>Commission</th>
+<th>NetEarn in gs</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+{% for earn in g in earn in gs %}
+<tr>
+<td>{{ earn in g.date }}</td>
+<td>{{ earn in g.book in g.service.title }}</td>
+<td>{{ earn in g.book in g.customer_name }}</td>
+<tdstyle="font-weight:600;">₹{{ earn in g.book in g.total_price }}</td>
+<tdstyle="color:#ef4444;">-₹{{ earn in g.commission|floatformat:0 }}</td>
+<tdstyle="font-weight:700;color:#10b981;font-size:1.1em;">₹{{ earn in g.net_earn in g|floatformat:0 }}</td>
+<td>
+<span class="badge{% if earn in g .book in g.status =='completed' %}badge-completed{% else %}badge-pend in g{% endif %}">
+{{ earn in g.book in g.get_status_display }}
+</span>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<divstyle="text-align:center;padd in g:60px;color:#999;">
+<divstyle="font-size:4em;marg in -bottom:20px;"></div>
+<h3>NoEarn in gsYet</h3>
+<p>Completebook in gstostartearn in g!</p>
+</div>
+{% endif %}
+</div>
+
+<!--PayoutInfo-->
+<div class="section-card">
+<h2 class="section-title">PayoutInformation</h2>
+<divstyle="background:#dbeafe;padd in g:20px;border-radius:8px;marg in -bottom:20px;">
+<pstyle="color:#1e40af;marg in :0;">
+<strong>ℹ️Note:</strong>Earn in gsfromcompletedbook in gsaretransferredtoyourregisteredbankaccountwith in 3-5bus in essdays.
+Commission:15%platformfeeoneachbook in g.
+</p>
+</div>
+<divstyle="display:grid;grid-template-columns:1fr1fr;gap:20px;">
+<divstyle="padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="color:#666;marg in -bottom:8px;">AvailableforPayout</div>
+<divstyle="font-size:2em;font-weight:bold;color:#10b981;">₹{{ available_payout|floatformat:0 }}</div>
+</div>
+<divstyle="padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="color:#666;marg in -bottom:8px;">Pend in gClearance</div>
+<divstyle="font-size:2em;font-weight:bold;color:#fbbf24;">₹{{ pend in g_payout|floatformat:0 }}</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

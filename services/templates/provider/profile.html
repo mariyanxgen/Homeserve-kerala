@@ -1,0 +1,93 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Profile - Provider Portal{% endblock %}
+{% block content %}
+<style>
+body { 
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%),
+                url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80') center/cover fixed;
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 100vh;
+}
+.provider-portal { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+.nav-tabs { display: flex; gap: 8px; background: white; padding: 12px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
+.nav-tabs a { padding: 12px 24px; background: transparent; border-radius: 8px; text-decoration: none; color: #64748b; font-weight: 600; transition: all 0.2s ease; font-size: 0.95em; }
+.nav-tabs a:hover { background: #f1f5f9; color: #334155; }
+.nav-tabs a.active { background: #1e40af; color: white; }
+.section-card { background: white; padding: 32px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 28px; border: 1px solid #e5e7eb; }
+.section-title { font-size: 1.5em; margin-bottom: 24px; color: #1e293b; font-weight: 600; }
+.btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.2s ease; font-size: 0.95em; margin-right: 10px; }
+.btn-primary { background: #1e40af; color: white; }
+.btn-primary:hover { background: #1e3a8a; }
+.badge { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; font-weight: 600; }
+.badge-confirmed { background: #d1fae5; color: #065f46; }
+.badge-pending { background: #fef3c7; color: #92400e; }
+.info-row { display: grid; grid-template-columns: 200px 1fr; gap: 15px; padding: 12px 0; border-bottom: 1px solid #e5e7eb; }
+.info-row strong { color: #1e293b; }
+.info-row span { color: #64748b; }
+</style>
+
+<div class="provider-portal">
+    <div class="nav-tabs">
+        <a href="/provider/">Home</a>
+        <a href="/provider/services/">My Services</a>
+        <a href="/provider/bookings/">Bookings</a>
+        <a href="/provider/earnings/">Earnings</a>
+        <a href="/provider/messages/">Messages</a>
+        <a href="/provider/calendar/">Calendar</a>
+        <a href="/provider/profile/" class="active">Profile</a>
+        <a href="/provider/reviews/">Reviews</a>
+    </div>
+
+    <div class="section-card">
+        <h1 class="section-title">Business Profile</h1>
+        <div class="info-row">
+            <strong>Business Name</strong>
+            <span>{{ provider.business_name }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Owner Name</strong>
+            <span>{{ provider.user.get_full_name|default:provider.user.username }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Email</strong>
+            <span>{{ provider.user.email }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Phone</strong>
+            <span>{{ provider.phone_number|default:"Not provided" }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Address</strong>
+            <span>{{ provider.address|default:"Not provided" }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Services</strong>
+            <span>{{ provider.services|default:"Not specified" }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Verification Status</strong>
+            <span>
+                {% if provider.is_verified %}
+                    <span class="badge badge-confirmed">Verified</span>
+                {% else %}
+                    <span class="badge badge-pending">Pending Verification</span>
+                {% endif %}
+            </span>
+        </div>
+        <div style="margin-top: 30px;">
+            <a href="{% url 'provider:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+            <button onclick="alert('Document upload coming soon!')" class="btn btn-primary">Upload Documents</button>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h2 class="section-title">Account Settings</h2>
+        <div style="color: #64748b;">
+            <p><a href="{% url 'provider:change_password' %}" class="btn btn-primary">Change Password</a></p>
+            <p><button onclick="alert('Notification settings coming soon!')" class="btn btn-primary">Notification Preferences</button></p>
+            <p><button onclick="alert('Bank details management coming soon!')" class="btn btn-primary">Bank Details</button></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

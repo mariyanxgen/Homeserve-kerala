@@ -1,0 +1,363 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}Book {{ service.title }} - HomeServe PRO{% endblock %}
+
+{% block extra_css %}
+<style>
+    .booking-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+    
+    .booking-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
+    
+    .booking-form-card {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .booking-header {
+        margin-bottom: 30px;
+    }
+    
+    .booking-header h1 {
+        font-size: 2rem;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+    
+    .booking-header p {
+        color: #64748b;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: inherit;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #334155;
+    }
+    
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .error-list {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0;
+    }
+    
+    .error-list li {
+        color: #ef4444;
+        font-size: 0.9rem;
+        padding: 3px 0;
+    }
+    
+    .service-summary-card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 20px;
+        align-self: start;
+    }
+    
+    .summary-header {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #1e293b;
+    }
+    
+    .service-info {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .service-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+    
+    .service-detail {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+    
+    .price-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .price-label {
+        font-weight: 600;
+        color: #334155;
+    }
+    
+    .price-amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    
+    .messages {
+        margin-bottom: 20px;
+    }
+    
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .alert-error {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+    
+    .alert-success {
+        background: #f0fdf4;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+    
+    .info-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        color: #1e40af;
+        font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+        .booking-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .service-summary-card {
+            position: static;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="booking-container">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="booking-grid">
+        <div class="booking-form-card">
+            <div class="booking-header">
+                <h1>Book Service</h1>
+                <p>Fill in your details to book this service</p>
+            </div>
+            
+            {% if not user.is_authenticated %}
+            <div class="info-box">
+                <strong>💡 Tip:</strong> <a href="/login/?next={{ request.path }}" style="color: #1e40af; text-decoration: underline;">Login</a> or <a href="/register/?next={{ request.path }}" style="color: #1e40af; text-decoration: underline;">Register</a> to save your booking details and track your orders.
+            </div>
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.customer_name.id_for_label }}">{{ form.customer_name.label }}</label>
+                    {{ form.customer_name }}
+                    {% if form.customer_name.errors %}
+                    <ul class="error-list">
+                        {% for error in form.customer_name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.customer_email.id_for_label }}">{{ form.customer_email.label }}</label>
+                    {{ form.customer_email }}
+                    {% if form.customer_email.errors %}
+                    <ul class="error-list">
+                        {% for error in form.customer_email.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.customer_phone.id_for_label }}">{{ form.customer_phone.label }}</label>
+                    {{ form.customer_phone }}
+                    {% if form.customer_phone.errors %}
+                    <ul class="error-list">
+                        {% for error in form.customer_phone.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.customer_address.id_for_label }}">{{ form.customer_address.label }}</label>
+                    {{ form.customer_address }}
+                    {% if form.customer_address.errors %}
+                    <ul class="error-list">
+                        {% for error in form.customer_address.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.booking_date.id_for_label }}">{{ form.booking_date.label }}</label>
+                    {{ form.booking_date }}
+                    {% if form.booking_date.errors %}
+                    <ul class="error-list">
+                        {% for error in form.booking_date.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.booking_time.id_for_label }}">{{ form.booking_time.label }}</label>
+                    {{ form.booking_time }}
+                    {% if form.booking_time.errors %}
+                    <ul class="error-list">
+                        {% for error in form.booking_time.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                    <ul class="error-list">
+                        {% for error in form.notes.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                
+                {% if service.is_emergency_available %}
+                <div class="form-check">
+                    {{ form.is_emergency }}
+                    <label for="{{ form.is_emergency.id_for_label }}">{{ form.is_emergency.label }}</label>
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="btn btn-primary submit-btn">Confirm Booking</button>
+            </form>
+        </div>
+        
+        <aside>
+            <div class="service-summary-card">
+                <h2 class="summary-header">Booking Summary</h2>
+                
+                <div class="service-info">
+                    <div class="service-title">{{ service.title }}</div>
+                    
+                    <div class="service-detail">
+                        <span>Category:</span>
+                        <strong>{{ service.category.name }}</strong>
+                    </div>
+                    
+                    <div class="service-detail">
+                        <span>Provider:</span>
+                        <strong>{{ service.provider.business_name }}</strong>
+                    </div>
+                    
+                    <div class="service-detail">
+                        <span>Duration:</span>
+                        <strong>{{ service.duration_minutes }} minutes</strong>
+                    </div>
+                    
+                    <div class="service-detail">
+                        <span>Pricing Type:</span>
+                        <strong>{{ service.get_pricing_type_display }}</strong>
+                    </div>
+                </div>
+                
+                <div class="price-total">
+                    <span class="price-label">Total Amount:</span>
+                    <span class="price-amount">₹{{ service.price }}</span>
+                </div>
+                
+                <p style="font-size: 0.85rem; color: #64748b; text-align: center;">
+                    <i class="fas fa-shield-alt"></i> Secure booking with service guarantee
+                </p>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,337 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Provider Dashboard - {{ provider.business_name }}{% endblock %}
+{% block content %}
+<style>
+.dashboard-container {
+    max-width: 1400px;
+    margin: 24px auto;
+    padding: 20px;
+}
+.dashboard-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+.metric-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #667eea;
+}
+.metric-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #667eea;
+}
+.metric-label {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+.section-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+.section-title {
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+.badge-success { background: #10b981; color: white; }
+.badge-warning { background: #f59e0b; color: white; }
+.badge-danger { background: #ef4444; color: white; }
+.badge-info { background: #3b82f6; color: white; }
+.badge-pending { background: #fbbf24; color: white; }
+.table { width: 100%; border-collapse: collapse; }
+.table th { background: #f3f4f6; padding: 12px; text-align: left; }
+.table td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+.btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; }
+.btn-primary { background: #667eea; color: white; }
+.btn-success { background: #10b981; color: white; }
+.btn-sm { padding: 6px 12px; font-size: 0.9em; }
+.earnings-box {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+}
+.notification-badge {
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 8px;
+    font-size: 0.8em;
+    margin-left: 8px;
+}
+</style>
+
+<div class="dashboard-container">
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="margin: 0;">Welcome back, {{ provider.business_name }}!</h1>
+                <p style="margin: 10px 0 0 0; opacity: 0.9;">
+                    <span class="badge {% if verification.status == 'verified' %}badge-success{% elif verification.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                        {{ provider.get_verification_status_display }}
+                    </span>
+                    {% if verification.has_insurance %}
+                    <span class="badge badge-info" style="margin-left: 10px;">✓ Insured</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.9em; opacity: 0.9;">
+                    ⭐ Rating: {{ provider.average_rating }}/5.0 ({{ provider.total_reviews }} reviews)
+                </div>
+                <div style="font-size: 0.9em; opacity: 0.9; margin-top: 5px;">
+                    📋 Total Jobs: {{ provider.total_bookings }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Stats Bar -->
+        <div style="display: flex; gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
+            <div>
+                <strong>📬 Messages</strong>
+                {% if unread_messages > 0 %}
+                <span class="notification-badge">{{ unread_messages }}</span>
+                {% else %}
+                <span style="opacity: 0.8; margin-left: 5px;">0</span>
+                {% endif %}
+            </div>
+            <div>
+                <strong>🔔 Notifications</strong>
+                {% if unread_notifications > 0 %}
+                <span class="notification-badge">{{ unread_notifications }}</span>
+                {% else %}
+                <span style="opacity: 0.8; margin-left: 5px;">0</span>
+                {% endif %}
+            </div>
+            <div>
+                <strong>📄 Documents</strong>
+                <span style="opacity: 0.8; margin-left: 5px;">{{ verification.verified_docs }}/{{ verification.verified_docs|add:verification.pending_docs }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings Section -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+        <div class="earnings-box">
+            <div style="font-size: 0.9em; opacity: 0.9; margin-bottom: 5px;">Total Earnings</div>
+            <div style="font-size: 2.5em; font-weight: bold;">₹{{ earnings.total|floatformat:0 }}</div>
+        </div>
+        <div class="metric-card" style="border-left-color: #f59e0b;">
+            <div class="metric-label">Pending Payout</div>
+            <div class="metric-value" style="color: #f59e0b;">₹{{ earnings.pending|floatformat:0 }}</div>
+        </div>
+        <div class="metric-card" style="border-left-color: #3b82f6;">
+            <div class="metric-label">This Month</div>
+            <div class="metric-value" style="color: #3b82f6;">₹{{ earnings.monthly|floatformat:0 }}</div>
+        </div>
+    </div>
+
+    <!-- Booking Metrics -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">⏳ Pending Bookings</div>
+            <div class="metric-value">{{ metrics.pending }}</div>
+        </div>
+        <div class="metric-card" style="border-left-color: #10b981;">
+            <div class="metric-label">✓ Confirmed</div>
+            <div class="metric-value" style="color: #10b981;">{{ metrics.confirmed }}</div>
+        </div>
+        <div class="metric-card" style="border-left-color: #059669;">
+            <div class="metric-label">✅ Completed</div>
+            <div class="metric-value" style="color: #059669;">{{ metrics.completed }}</div>
+        </div>
+        <div class="metric-card" style="border-left-color: #8b5cf6;">
+            <div class="metric-label">🔧 Active Services</div>
+            <div class="metric-value" style="color: #8b5cf6;">{{ metrics.active_services }}</div>
+        </div>
+    </div>
+
+    <!-- Last 30 Days Analytics -->
+    {% if stats %}
+    <div class="section-card">
+        <h2 class="section-title">📊 Last 30 Days Performance</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+            <div>
+                <div style="color: #666; font-size: 0.9em;">Total Bookings</div>
+                <div style="font-size: 1.8em; font-weight: bold; color: #667eea;">{{ stats.total_bookings|default:0 }}</div>
+            </div>
+            <div>
+                <div style="color: #666; font-size: 0.9em;">Completed</div>
+                <div style="font-size: 1.8em; font-weight: bold; color: #10b981;">{{ stats.completed|default:0 }}</div>
+            </div>
+            <div>
+                <div style="color: #666; font-size: 0.9em;">Revenue</div>
+                <div style="font-size: 1.8em; font-weight: bold; color: #059669;">₹{{ stats.revenue|floatformat:0|default:"0" }}</div>
+            </div>
+            <div>
+                <div style="color: #666; font-size: 0.9em;">Avg Rating</div>
+                <div style="font-size: 1.8em; font-weight: bold; color: #f59e0b;">{{ stats.avg_rating|floatformat:1|default:"N/A" }} ⭐</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Upcoming Bookings -->
+    <div class="section-card">
+        <h2 class="section-title">📅 Upcoming Bookings</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Service</th>
+                    <th>Customer</th>
+                    <th>Date & Time</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for b in upcoming_bookings %}
+                <tr>
+                    <td><strong>#{{ b.id }}</strong></td>
+                    <td>{{ b.service.title }}</td>
+                    <td>{{ b.customer_name }}<br><small style="color: #666;">{{ b.customer_phone }}</small></td>
+                    <td>{{ b.booking_date|date:"M d, Y" }}<br><small>{{ b.booking_time }}</small></td>
+                    <td><strong>₹{{ b.total_amount }}</strong></td>
+                    <td>
+                        <span class="badge {% if b.status == 'pending' %}badge-pending{% elif b.status == 'confirmed' %}badge-info{% else %}badge-success{% endif %}">
+                            {{ b.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if b.status == 'pending' %}
+                        <form method="post" action="{% url 'provider_confirm_booking' b.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-primary btn-sm">✓ Confirm</button>
+                        </form>
+                        {% elif b.status == 'confirmed' %}
+                        <form method="post" action="{% url 'provider_complete_booking' b.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-success btn-sm">✅ Complete</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                    No upcoming bookings at the moment.
+                </td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+        
+        <!-- Recent Messages -->
+        <div class="section-card">
+            <h2 class="section-title">💬 Recent Messages</h2>
+            {% for msg in recent_messages %}
+            <div style="padding: 15px; background: #f9fafb; border-radius: 8px; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <strong>{{ msg.sender.username }}</strong>
+                    <small style="color: #666;">{{ msg.created_at|date:"M d, H:i" }}</small>
+                </div>
+                <div style="color: #555;">{{ msg.message_text|truncatewords:15 }}</div>
+                {% if not msg.is_read %}
+                <span class="badge badge-danger" style="margin-top: 5px;">Unread</span>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p style="color: #999; text-align: center; padding: 20px;">No messages yet.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Reviews -->
+        <div class="section-card">
+            <h2 class="section-title">⭐ Recent Reviews</h2>
+            {% for r in recent_reviews %}
+            <div style="padding: 15px; background: #f9fafb; border-radius: 8px; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <strong>{{ r.customer.username }}</strong>
+                    <span style="color: #f59e0b;">{{ r.rating }}★</span>
+                </div>
+                <div style="color: #555;">{{ r.review_text|default:"(No comment)"|truncatewords:20 }}</div>
+                <small style="color: #666;">{{ r.created_at|date:"M d, Y" }}</small>
+            </div>
+            {% empty %}
+            <p style="color: #999; text-align: center; padding: 20px;">No reviews yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Your Services -->
+    <div class="section-card">
+        <h2 class="section-title">🔧 Your Services ({{ metrics.active_services }} active)</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+        {% for s in services %}
+            <div style="padding: 15px; background: #f9fafb; border-radius: 8px; border-left: 3px solid {% if s.is_active %}#10b981{% else %}#999{% endif %};">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <strong style="color: #333;">{{ s.title }}</strong>
+                    <span class="badge {% if s.is_active %}badge-success{% else %}badge-secondary{% endif %}">
+                        {% if s.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
+                <div style="margin-top: 8px; color: #666; font-size: 0.9em;">
+                    {{ s.category.name }} • {{ s.get_pricing_type_display }}
+                </div>
+                <div style="margin-top: 8px; font-size: 1.2em; font-weight: bold; color: #667eea;">
+                    ₹{{ s.price }}
+                </div>
+            </div>
+        {% empty %}
+            <p style="color: #999;">No services listed yet.</p>
+        {% endfor %}
+        </div>
+    </div>
+
+    <!-- Weekly Availability -->
+    {% if availability %}
+    <div class="section-card">
+        <h2 class="section-title">📅 Weekly Availability</h2>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;">
+        {% for avail in availability %}
+            <div style="padding: 15px; background: {% if avail.is_available %}#ecfdf5{% else %}#f3f4f6{% endif %}; border-radius: 8px; text-align: center;">
+                <div style="font-weight: bold; margin-bottom: 5px;">{{ avail.get_weekday_display }}</div>
+                {% if avail.is_available %}
+                <div style="color: #10b981; font-size: 0.9em;">{{ avail.start_time|time:"H:i" }} - {{ avail.end_time|time:"H:i" }}</div>
+                {% else %}
+                <div style="color: #999; font-size: 0.9em;">Unavailable</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

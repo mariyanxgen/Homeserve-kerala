@@ -1,0 +1,601 @@
+/* Kerala-themed Color Palette */
+:root {
+    --kerala-green: #006838;
+    --kerala-gold: #FFD700;
+    --kerala-red: #DC143C;
+    --kerala-light-green: #90EE90;
+    --primary-color: #006838;
+    --secondary-color: #228B22;
+    --accent-color: #FFD700;
+    --text-dark: #2C3E50;
+    --text-light: #6C757D;
+    --bg-light: #F8F9FA;
+    --white: #FFFFFF;
+    --shadow: 0 2px 10px rgba(0,0,0,0.1);
+    --shadow-hover: 0 5px 20px rgba(0,104,56,0.2);
+}
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    background-color: var(--white);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Malayalam Font Support */
+.malayalam, .kerala-text {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.malayalam-sub {
+    font-family: 'Times New Roman', Times, serif;
+    color: var(--kerala-green);
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--kerala-green) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    font-size: 1.8em;
+    margin-bottom: 0;
+}
+
+.logo .kerala-text {
+    color: var(--kerala-gold);
+    font-size: 0.9em;
+}
+
+.logo .tagline {
+    font-size: 0.75em;
+    color: var(--kerala-light-green);
+    font-style: italic;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-menu a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+    color: var(--kerala-gold);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary,
+.btn-search {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-size: 1em;
+}
+
+.btn-primary {
+    background: var(--kerala-gold);
+    color: var(--text-dark);
+}
+
+.btn-primary:hover {
+    background: #FFC700;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid var(--white);
+}
+
+.btn-secondary:hover {
+    background: var(--white);
+    color: var(--kerala-green);
+}
+
+.btn-search {
+    background: var(--kerala-red);
+    color: var(--white);
+}
+
+.btn-search:hover {
+    background: #C41E3A;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    background: linear-gradient(135deg, rgba(0,104,56,0.9), rgba(34,139,34,0.9)),
+                url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920') center/cover;
+    padding: 100px 0;
+    color: var(--white);
+    text-align: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,104,56,0.85), rgba(34,139,34,0.85));
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-title .malayalam {
+    color: var(--kerala-gold);
+    font-size: 0.7em;
+    display: block;
+    margin-top: 10px;
+}
+
+.hero-subtitle {
+    font-size: 1.3em;
+    margin-bottom: 40px;
+    color: var(--kerala-light-green);
+}
+
+/* Search Box */
+.search-box {
+    background: var(--white);
+    padding: 15px;
+    border-radius: 50px;
+    display: flex;
+    gap: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-hover);
+}
+
+.search-box input,
+.search-box select {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid #E0E0E0;
+    border-radius: 25px;
+    font-size: 1em;
+    outline: none;
+}
+
+.search-box input:focus,
+.search-box select:focus {
+    border-color: var(--kerala-green);
+}
+
+/* Sections */
+.services-section,
+.providers-section,
+.how-it-works,
+.districts-section,
+.stats-section {
+    padding: 60px 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: var(--kerala-green);
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    text-align: center;
+    color: var(--kerala-gold);
+    font-size: 1.2em;
+    margin-bottom: 40px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* Service Cards */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.service-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--kerala-gold);
+}
+
+.service-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    color: var(--kerala-green);
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.service-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 15px 0;
+    color: var(--text-light);
+}
+
+.service-stats i {
+    color: var(--kerala-gold);
+}
+
+/* Provider Cards */
+.providers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.provider-card {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.provider-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--kerala-green);
+}
+
+.provider-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.provider-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--kerala-green);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.provider-info h3 {
+    color: var(--kerala-green);
+    margin-bottom: 5px;
+}
+
+.provider-location {
+    color: var(--text-light);
+    font-size: 0.9em;
+}
+
+.provider-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.rating-stars {
+    color: var(--kerala-gold);
+}
+
+.verified-badge {
+    display: inline-block;
+    background: var(--kerala-light-green);
+    color: var(--kerala-green);
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+/* Steps/How It Works */
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.step-card {
+    background: var(--bg-light);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    position: relative;
+}
+
+.step-number {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--kerala-gold);
+    color: var(--text-dark);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.step-icon {
+    font-size: 3em;
+    color: var(--kerala-green);
+    margin: 20px 0;
+}
+
+.step-card h3 {
+    color: var(--kerala-green);
+    margin: 15px 0 10px;
+}
+
+/* Districts Grid */
+.districts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.district-card {
+    background: linear-gradient(135deg, var(--kerala-green), var(--secondary-color));
+    color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1em;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.district-card:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Stats Section */
+.stats-section {
+    background: linear-gradient(135deg, var(--kerala-green), var(--secondary-color));
+    color: var(--white);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 30px;
+}
+
+.stat-icon {
+    font-size: 3em;
+    color: var(--kerala-gold);
+    margin-bottom: 15px;
+}
+
+.stat-number {
+    font-size: 3em;
+    font-weight: bold;
+    color: var(--white);
+    margin: 10px 0;
+}
+
+.stat-card p {
+    font-size: 1.1em;
+    color: var(--kerala-light-green);
+}
+
+/* Footer */
+.footer {
+    background: var(--text-dark);
+    color: var(--white);
+    padding: 50px 0 20px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer-section h3,
+.footer-section h4 {
+    color: var(--kerala-gold);
+    margin-bottom: 15px;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin: 10px 0;
+}
+
+.footer-section a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-section a:hover {
+    color: var(--kerala-gold);
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.social-links a {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--kerala-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    background: var(--kerala-gold);
+    color: var(--text-dark);
+    transform: translateY(-3px);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.provider-skeleton {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+    
+    .hero-title {
+        font-size: 2em;
+    }
+    
+    .search-box {
+        flex-direction: column;
+        border-radius: 15px;
+    }
+    
+    .search-box input,
+    .search-box select,
+    .search-box button {
+        width: 100%;
+        border-radius: 10px;
+    }
+    
+    .services-grid,
+    .providers-grid,
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loading Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.service-card,
+.provider-card {
+    animation: fadeIn 0.5s ease-in-out;
+}

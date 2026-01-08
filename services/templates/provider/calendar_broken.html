@@ -1,0 +1,139 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Calendar-ProviderPortal{% endblock %}
+{% block content %}
+<style>
+body{background:#f8fafc;font-family:'TimesNewRoman',Times,serif;m in -height:100vh;}
+.provider-portal{max-width:1400px;marg in :0auto;padd in g:30px20px;}
+.nav-tabs{display:flex;gap:8px;background:white;padd in g:12px;border-radius:12px;marg in -bottom:30px;box-shadow:01px3pxrgba(0,0,0,0.1);border:1pxsolid#e5e7eb;}
+.nav-tabsa{padd in g:12px24px;background:transparent;border-radius:8px;text-decoration:none;color:#64748b;font-weight:600;transition:all0.2sease;font-size:0.95em;}
+.nav-tabsa:hover{background:#f1f5f9;color:#334155;}
+.nav-tabsa.active{background:#1e40af;color:white;}
+.section-card{background:white;padd in g:32px;border-radius:12px;box-shadow:01px3pxrgba(0,0,0,0.1);marg in -bottom:28px;border:1pxsolid#e5e7eb;}
+.section-title{font-size:1.5em;marg in -bottom:24px;color:#1e293b;font-weight:600;}
+.stat-value{font-size:2.8em;font-weight:700;color:#1e40af;marg in :12px08px0;}
+.stat-label{color:#64748b;font-size:0.95em;font-weight:500;}
+.badge{display: in l in e-block;padd in g:6px14px;border-radius:6px;font-size:0.85em;font-weight:600;}
+.badge-pend in g{background:#fef3c7;color:#92400e;}
+.badge-confirmed{background:#d1fae5;color:#065f46;}
+.badge-completed{background:#dbeafe;color:#1e40af;}
+.badge-cancelled{background:#fee2e2;color:#991b1b;}
+.btn{padd in g:10px20px;border:none;border-radius:8px;cursor:po in ter;font-weight:600;text-decoration:none;display: in l in e-block;transition:all0.2sease;font-size:0.95em;marg in -right:10px;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:#1e40af;color:white;}
+.btn-primary:hover{background:#1e3a8a;}
+.btn-success{background:#059669;color:white;}
+.btn-success:hover{background:#047857;}
+.btn-danger{background:#dc2626;color:white;}
+.btn-danger:hover{background:#b91c1c;}
+.btn-secondary{background:#64748b;color:white;}
+.btn-secondary:hover{background:#475569;}
+</style>
+
+<div class="provider-portal">
+<!--Navigation-->
+<div class="nav-tabs">
+<a href="/provider/">Home</a>
+<a href="/provider/services/">MyServices</a>
+<a href="/provider/book in gs/">Book in gs</a>
+<a href="/provider/earn in gs/">Earn in gs</a>
+<a href="/provider/messages/">Messages</a>
+<a href="/provider/calendar/"class="active">Calendar</a>
+<a href="/provider/reviews/">⭐Reviews</a>
+<a href="/provider/profile/">️Profile</a>
+</div>
+
+<!--Calendar-->
+<div class="section-card">
+<divstyle="display:flex;justify-content:space-between;align-items:center;marg in -bottom:25px;">
+<h1 class="section-title"style="marg in :0;">Book in gCalendar-{{ current_month }}</h1>
+<div>
+<a href="/adm in /services/provideravailability/add/"target="_blank"class="btnbtn-primary">+SetAvailability</a>
+<a href="/adm in /services/providerleave/add/"target="_blank"class="btn"style="background:#ef4444;color:white;">MarkLeave</a>
+</div>
+</div>
+
+<!--CalendarHeader-->
+<div class="calendar-header">
+<div>Sunday</div>
+<div>Monday</div>
+<div>Tuesday</div>
+<div>Wednesday</div>
+<div>Thursday</div>
+<div>Friday</div>
+<div>Saturday</div>
+</div>
+
+<!--CalendarGrid-->
+<div class="calendar-grid">
+{% for day in calendar_days %}
+<div class="calendar-day{% if day .other_month %}other-month{% endif %}">
+<div class="calendar-day-number">{{ day.day }}</div>
+{% for book in g in day .book in gs %}
+<div class="calendar-event{{ book in g.status }}"title="{{ book in g.service.title }}-{{ book in g.customer_name }}">
+{{ book in g.book in g_time }}{{ book in g.service.title|truncatewords:2 }}
+</div>
+{% endfor %}
+{% if day .is_leave %}
+<divstyle="background:#ef4444;color:white;padd in g:4px8px;border-radius:4px;font-size:0.85em;">OnLeave</div>
+{% endif %}
+</div>
+{% endfor %}
+</div>
+
+<divstyle="display:flex;gap:20px;marg in -top:20px;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="display:flex;align-items:center;gap:8px;">
+<divstyle="width:20px;height:20px;background:#fbbf24;border-radius:4px;"></div>
+<span>Pend in g</span>
+</div>
+<divstyle="display:flex;align-items:center;gap:8px;">
+<divstyle="width:20px;height:20px;background:#10b981;border-radius:4px;"></div>
+<span>Confirmed</span>
+</div>
+<divstyle="display:flex;align-items:center;gap:8px;">
+<divstyle="width:20px;height:20px;background:#1e40af;border-radius:4px;"></div>
+<span>Completed</span>
+</div>
+<divstyle="display:flex;align-items:center;gap:8px;">
+<divstyle="width:20px;height:20px;background:#ef4444;border-radius:4px;"></div>
+<span>Leave</span>
+</div>
+</div>
+</div>
+
+<!--Upcom in gBook in gs-->
+<div class="section-card">
+<h2 class="section-title">Upcom in gBook in gs(Next7Days)</h2>
+{% if upcom in g_book in gs %}
+<divstyle="display:flex;flex-direction:column;gap:12px;">
+{% for book in g in upcom in g_book in gs %}
+<divstyle="padd in g:15px;background:#f9fafb;border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+<div>
+<divstyle="font-weight:bold;font-size:1.1em;">{{ book in g.service.title }}</div>
+<divstyle="color:#666;marg in -top:5px;">
+{{ book in g.book in g_date }}at{{ book in g.book in g_time }}•{{ book in g.customer_name }}
+</div>
+</div>
+<a href="/adm in /services/book in g/{{ book in g.id }}/change/"target="_blank"class="btnbtn-primary">ViewDetails</a>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<pstyle="text-align:center;padd in g:40px;color:#999;">Noupcom in gbook in gs in thenext7days.</p>
+{% endif %}
+</div>
+
+<!--AvailabilitySett in gs-->
+<div class="section-card">
+<h2 class="section-title">️AvailabilityManagement</h2>
+<divstyle="background:#dbeafe;padd in g:20px;border-radius:8px;marg in -bottom:20px;">
+<pstyle="color:#1e40af;marg in :0;">
+<strong>ℹ️Tip:</strong>Setyourweeklyavailabilityscheduleandmarkspecificdatesasleavetomanageyourbook in gseffectively.
+</p>
+</div>
+<divstyle="display:flex;gap:15px;">
+<a href="/adm in /services/provideravailability/"target="_blank"class="btnbtn-primary">ManageWeeklySchedule</a>
+<a href="/adm in /services/providerleave/"target="_blank"class="btn"style="background:#6b7280;color:white;">ViewLeaveHistory</a>
+</div>
+</div>
+</div>
+{% endblock %}

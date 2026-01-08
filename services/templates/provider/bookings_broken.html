@@ -1,0 +1,142 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Book in gs-ProviderPortal{% endblock %}
+{% block content %}
+<style>
+body{background:#f8fafc;font-family:'TimesNewRoman',Times,serif;m in -height:100vh;}
+.provider-portal{max-width:1400px;marg in :0auto;padd in g:30px20px;}
+.nav-tabs{display:flex;gap:8px;background:white;padd in g:12px;border-radius:12px;marg in -bottom:30px;box-shadow:01px3pxrgba(0,0,0,0.1);border:1pxsolid#e5e7eb;}
+.nav-tabsa{padd in g:12px24px;background:transparent;border-radius:8px;text-decoration:none;color:#64748b;font-weight:600;transition:all0.2sease;font-size:0.95em;}
+.nav-tabsa:hover{background:#f1f5f9;color:#334155;}
+.nav-tabsa.active{background:#1e40af;color:white;}
+.section-card{background:white;padd in g:32px;border-radius:12px;box-shadow:01px3pxrgba(0,0,0,0.1);marg in -bottom:28px;border:1pxsolid#e5e7eb;}
+.section-title{font-size:1.5em;marg in -bottom:24px;color:#1e293b;font-weight:600;}
+.stat-value{font-size:2.8em;font-weight:700;color:#1e40af;marg in :12px08px0;}
+.stat-label{color:#64748b;font-size:0.95em;font-weight:500;}
+.badge{display: in l in e-block;padd in g:6px14px;border-radius:6px;font-size:0.85em;font-weight:600;}
+.badge-pend in g{background:#fef3c7;color:#92400e;}
+.badge-confirmed{background:#d1fae5;color:#065f46;}
+.badge-completed{background:#dbeafe;color:#1e40af;}
+.badge-cancelled{background:#fee2e2;color:#991b1b;}
+.btn{padd in g:10px20px;border:none;border-radius:8px;cursor:po in ter;font-weight:600;text-decoration:none;display: in l in e-block;transition:all0.2sease;font-size:0.95em;marg in -right:10px;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:#1e40af;color:white;}
+.btn-primary:hover{background:#1e3a8a;}
+.btn-success{background:#059669;color:white;}
+.btn-success:hover{background:#047857;}
+.btn-danger{background:#dc2626;color:white;}
+.btn-danger:hover{background:#b91c1c;}
+.btn-secondary{background:#64748b;color:white;}
+.btn-secondary:hover{background:#475569;}
+</style>
+
+<div class="provider-portal">
+<!--Navigation-->
+<div class="nav-tabs">
+<a href="/provider/">Home</a>
+<a href="/provider/services/">MyServices</a>
+<a href="/provider/book in gs/"class="active">Book in gs</a>
+<a href="/provider/earn in gs/">Earn in gs</a>
+<a href="/provider/messages/">Messages</a>
+<a href="/provider/calendar/">Calendar</a>
+<a href="/provider/reviews/">⭐Reviews</a>
+<a href="/provider/profile/">️Profile</a>
+</div>
+
+<!--Stats-->
+<div class="stats-row">
+<div class="stat-box">
+<divstyle="font-size:2em;font-weight:bold;color:#fbbf24;">{{ pend in g_count }}</div>
+<divstyle="color:#666;marg in -top:5px;">Pend in g</div>
+</div>
+<div class="stat-box">
+<divstyle="font-size:2em;font-weight:bold;color:#10b981;">{{ confirmed_count }}</div>
+<divstyle="color:#666;marg in -top:5px;">Confirmed</div>
+</div>
+<div class="stat-box">
+<divstyle="font-size:2em;font-weight:bold;color:#3b82f6;">{{ completed_count }}</div>
+<divstyle="color:#666;marg in -top:5px;">Completed</div>
+</div>
+<div class="stat-box">
+<divstyle="font-size:2em;font-weight:bold;color:#1e40af;">{{ total_book in gs }}</div>
+<divstyle="color:#666;marg in -top:5px;">TotalBook in gs</div>
+</div>
+</div>
+
+<!--Book in gsList-->
+<div class="section-card">
+<h1 class="section-title">AllBook in gs</h1>
+
+<!--Filters-->
+<div class="filters">
+<button class="filter-btn{% if not request  .GET.status  %}active{% endif %}" onclick="w in dow.location.href='/provider/book in gs/'">All</button>
+<button class="filter-btn{% if request  .GET.status =='pend in g' %}active{% endif %}" onclick="w in dow.location.href='/provider/book in gs/?status=pend in g'">Pend in g</button>
+<button class="filter-btn{% if request  .GET.status =='confirmed' %}active{% endif %}" onclick="w in dow.location.href='/provider/book in gs/?status=confirmed'">Confirmed</button>
+<button class="filter-btn{% if request  .GET.status =='completed' %}active{% endif %}" onclick="w in dow.location.href='/provider/book in gs/?status=completed'">Completed</button>
+<button class="filter-btn{% if request  .GET.status =='cancelled' %}active{% endif %}" onclick="w in dow.location.href='/provider/book in gs/?status=cancelled'">Cancelled</button>
+</div>
+
+{% if book in gs %}
+<div class="book in g-list">
+{% for book in g in book in gs %}
+<div class="book in g-card">
+<div class="book in g-header">
+<div>
+<h3style="marg in :008px0;font-size:1.2em;">{{ book in g.service.title }}</h3>
+<divstyle="color:#666;font-size:0.95em;">
+<div>Customer:<strong>{{ book in g.customer_name }}</strong></div>
+<div>Phone:{{ book in g.customer_phone }}</div>
+<div>Email:{{ book in g.customer_email }}</div>
+</div>
+</div>
+<span class="badgebadge-{{ book in g.status }}">{{ book in g.get_status_display }}</span>
+</div>
+
+<divstyle="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;marg in :15px0;padd in g:15px;background:white;border-radius:8px;">
+<div>
+<divstyle="color:#666;font-size:0.9em;">Date</div>
+<divstyle="font-weight:600;">{{ book in g.book in g_date }}</div>
+</div>
+<div>
+<divstyle="color:#666;font-size:0.9em;">Time</div>
+<divstyle="font-weight:600;">{{ book in g.book in g_time }}</div>
+</div>
+<div>
+<divstyle="color:#666;font-size:0.9em;">Amount</div>
+<divstyle="font-weight:600;color:#1e40af;font-size:1.1em;">₹{{ book in g.total_price }}</div>
+</div>
+</div>
+
+<divstyle="padd in g:15px;background:white;border-radius:8px;marg in -bottom:15px;">
+<divstyle="color:#666;font-size:0.9em;marg in -bottom:5px;">Address:</div>
+<divstyle="font-weight:500;">{{ book in g.address }}</div>
+</div>
+
+{% if book in g .special_requests %}
+<divstyle="padd in g:12px;background:#fef3c7;border-radius:8px;marg in -bottom:15px;">
+<divstyle="color:#92400e;font-size:0.9em;marg in -bottom:5px;">SpecialRequests:</div>
+<divstyle="color:#78350f;">{{ book in g.special_requests }}</div>
+</div>
+{% endif %}
+
+<divstyle="display:flex;gap:10px;">
+{% if book in g .status =='pend in g' %}
+<a href="/adm in /services/book in g/{{ book in g.id }}/change/"target="_blank"class="btnbtn-success">ConfirmBook in g</a>
+<a href="/adm in /services/book in g/{{ book in g.id }}/change/"target="_blank"class="btnbtn-danger">Cancel</a>
+{% elifbook in g .status =='confirmed' %}
+<a href="/adm in /services/book in g/{{ book in g.id }}/change/"target="_blank"class="btnbtn-success">MarkComplete</a>
+{% endif %}
+<a href="/adm in /services/book in g/{{ book in g.id }}/change/"target="_blank"class="btn"style="background:#6b7280;color:white;">ViewDetails</a>
+</div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<divstyle="text-align:center;padd in g:60px;color:#999;">
+<divstyle="font-size:4em;marg in -bottom:20px;"></div>
+<h3>NoBook in gsYet</h3>
+<p>Yourbook in gswillappearhereoncecustomersstartbook in gyourservices.</p>
+</div>
+{% endif %}
+</div>
+</div>
+{% endblock %}

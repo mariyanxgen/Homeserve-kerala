@@ -1,0 +1,185 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Profile-ProviderPortal{% endblock %}
+{% block content %}
+<style>
+body{background:#f8fafc;font-family:'TimesNewRoman',Times,serif;m in -height:100vh;}
+.provider-portal{max-width:1400px;marg in :0auto;padd in g:30px20px;}
+.nav-tabs{display:flex;gap:8px;background:white;padd in g:12px;border-radius:12px;marg in -bottom:30px;box-shadow:01px3pxrgba(0,0,0,0.1);border:1pxsolid#e5e7eb;}
+.nav-tabsa{padd in g:12px24px;background:transparent;border-radius:8px;text-decoration:none;color:#64748b;font-weight:600;transition:all0.2sease;font-size:0.95em;}
+.nav-tabsa:hover{background:#f1f5f9;color:#334155;}
+.nav-tabsa.active{background:#1e40af;color:white;}
+.section-card{background:white;padd in g:32px;border-radius:12px;box-shadow:01px3pxrgba(0,0,0,0.1);marg in -bottom:28px;border:1pxsolid#e5e7eb;}
+.section-title{font-size:1.5em;marg in -bottom:24px;color:#1e293b;font-weight:600;}
+.stat-value{font-size:2.8em;font-weight:700;color:#1e40af;marg in :12px08px0;}
+.stat-label{color:#64748b;font-size:0.95em;font-weight:500;}
+.badge{display: in l in e-block;padd in g:6px14px;border-radius:6px;font-size:0.85em;font-weight:600;}
+.badge-pend in g{background:#fef3c7;color:#92400e;}
+.badge-confirmed{background:#d1fae5;color:#065f46;}
+.badge-completed{background:#dbeafe;color:#1e40af;}
+.badge-cancelled{background:#fee2e2;color:#991b1b;}
+.btn{padd in g:10px20px;border:none;border-radius:8px;cursor:po in ter;font-weight:600;text-decoration:none;display: in l in e-block;transition:all0.2sease;font-size:0.95em;marg in -right:10px;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:#1e40af;color:white;}
+.btn-primary:hover{background:#1e3a8a;}
+.btn-success{background:#059669;color:white;}
+.btn-success:hover{background:#047857;}
+.btn-danger{background:#dc2626;color:white;}
+.btn-danger:hover{background:#b91c1c;}
+.btn-secondary{background:#64748b;color:white;}
+.btn-secondary:hover{background:#475569;}
+</style>
+
+<div class="provider-portal">
+<!--Navigation-->
+<div class="nav-tabs">
+<a href="/provider/">Home</a>
+<a href="/provider/services/">MyServices</a>
+<a href="/provider/book in gs/">Book in gs</a>
+<a href="/provider/earn in gs/">Earn in gs</a>
+<a href="/provider/messages/">Messages</a>
+<a href="/provider/calendar/">Calendar</a>
+<a href="/provider/reviews/">⭐Reviews</a>
+<a href="/provider/profile/"class="active">️Profile</a>
+</div>
+
+<div class="profile-grid">
+<!--Sidebar-->
+<div>
+<div class="profile-sidebar">
+<div class="profile-photo"></div>
+<h2style="marg in :0010px0;">{{ provider.bus in ess_name }}</h2>
+<divstyle="opacity:0.9;marg in -bottom:20px;">{{ provider.service_type }}</div>
+<divstyle="display:flex;justify-content:center;gap:10px;marg in -bottom:20px;">
+<divstyle="background:rgba(255,255,255,0.2);padd in g:12px20px;border-radius:8px;">
+<divstyle="font-size:1.8em;font-weight:bold;">⭐{{ provider.rat in g|floatformat:1 }}</div>
+<divstyle="font-size:0.9em;opacity:0.9;">Rat in g</div>
+</div>
+<divstyle="background:rgba(255,255,255,0.2);padd in g:12px20px;border-radius:8px;">
+<divstyle="font-size:1.8em;font-weight:bold;">{{ total_book in gs }}</div>
+<divstyle="font-size:0.9em;opacity:0.9;">Book in gs</div>
+</div>
+</div>
+{% if provider .is_verified %}
+<span class="badgebadge-verified">VerifiedProvider</span>
+{% else %}
+<span class="badgebadge-pend in g">Pend in gVerification</span>
+{% endif %}
+</div>
+
+<!--QuickActions-->
+<div class="section-card"style="marg in -top:20px;">
+<h3style="marg in -top:0;">QuickActions</h3>
+<divstyle="display:flex;flex-direction:column;gap:10px;">
+<a href="/adm in /services/serviceprovider/{{ provider.id }}/change/"target="_blank"class="btnbtn-primary"style="text-align:center;">EditProfile</a>
+<a href="/adm in /services/providerdocument/"target="_blank"class="btn"style="background:#10b981;color:white;text-align:center;">ManageDocuments</a>
+<a href="/adm in /services/provider in surance/"target="_blank"class="btn"style="background:#fbbf24;color:white;text-align:center;">InsuranceDetails</a>
+</div>
+</div>
+</div>
+
+<!--Ma in Content-->
+<div>
+<!--Bus in essInformation-->
+<div class="section-card">
+<h2 class="section-title">Bus in essInformation</h2>
+<div class=" in fo-row">
+<div class=" in fo-label">Bus in essName</div>
+<div class=" in fo-value">{{ provider.bus in ess_name }}</div>
+</div>
+<div class=" in fo-row">
+<div class=" in fo-label">ServiceType</div>
+<div class=" in fo-value">{{ provider.service_type }}</div>
+</div>
+<div class=" in fo-row">
+<div class=" in fo-label">Experience</div>
+<div class=" in fo-value">{{ provider.years_of_experience }}years</div>
+</div>
+<div class=" in fo-row">
+<div class=" in fo-label">Description</div>
+<div class=" in fo-value">{{ provider.description }}</div>
+</div>
+</div>
+
+<!--ContactInformation-->
+<div class="section-card">
+<h2 class="section-title">ContactInformation</h2>
+<div class=" in fo-row">
+<div class=" in fo-label">Email</div>
+<div class=" in fo-value">{{ provider.user.email }}</div>
+</div>
+<div class=" in fo-row">
+<div class=" in fo-label">Phone</div>
+<div class=" in fo-value">{{ provider.phone_number }}</div>
+</div>
+<div class=" in fo-row">
+<div class=" in fo-label">Address</div>
+<div class=" in fo-value">{{ provider.address }}</div>
+</div>
+<div class=" in fo-row">
+<div class=" in fo-label">Location</div>
+<div class=" in fo-value">{{ provider.city }},{{ provider.state }}-{{ provider.p in code }}</div>
+</div>
+</div>
+
+<!--VerificationStatus-->
+<div class="section-card">
+<h2 class="section-title">Verification&Documents</h2>
+<divstyle="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;marg in -bottom:20px;">
+<divstyle="padd in g:20px;background:{% if provider .is_verified %}#d1fae5{% else %}#fef3c7{% endif %};border-radius:8px;">
+<divstyle="font-weight:600;marg in -bottom:5px;">ProviderVerification</div>
+<span class="badge{% if provider .is_verified %}badge-verified{% else %}badge-pend in g{% endif %}">
+{% if provider .is_verified %}Verified{% else %}Pend in g{% endif %}
+</span>
+</div>
+<divstyle="padd in g:20px;background:{% if provider .is_background_verified %}#d1fae5{% else %}#fef3c7{% endif %};border-radius:8px;">
+<divstyle="font-weight:600;marg in -bottom:5px;">BackgroundCheck</div>
+<span class="badge{% if provider .is_background_verified %}badge-verified{% else %}badge-pend in g{% endif %}">
+{% if provider .is_background_verified %}Verified{% else %}Pend in g{% endif %}
+</span>
+</div>
+</div>
+
+{% if documents %}
+<h3style="marg in :20px015px0;">UploadedDocuments</h3>
+<divstyle="display:flex;flex-direction:column;gap:10px;">
+{% for doc in documents %}
+<divstyle="padd in g:12px;background:#f9fafb;border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+<div>
+<strong>{{ doc.document_type }}</strong>
+<spanstyle="marg in -left:10px;"class="badge{% if doc .is_verified %}badge-verified{% else %}badge-pend in g{% endif %}">
+{% if doc .is_verified %}Verified{% else %}Pend in g{% endif %}
+</span>
+</div>
+<a href="{{ doc.document_file.url }}"target="_blank"class="btn"style="background:#6b7280;color:white;padd in g:8px16px;">View</a>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<divstyle="marg in -top:20px;">
+<a href="/adm in /services/providerdocument/add/"target="_blank"class="btnbtn-primary">+UploadDocument</a>
+</div>
+</div>
+
+<!--Stats-->
+<div class="section-card">
+<h2 class="section-title">PerformanceStats</h2>
+<divstyle="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;">
+<divstyle="text-align:center;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="font-size:2em;font-weight:bold;color:#1e40af;">{{ total_book in gs }}</div>
+<divstyle="color:#666;marg in -top:8px;">TotalBook in gs</div>
+</div>
+<divstyle="text-align:center;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="font-size:2em;font-weight:bold;color:#10b981;">{{ completed_book in gs }}</div>
+<divstyle="color:#666;marg in -top:8px;">Completed</div>
+</div>
+<divstyle="text-align:center;padd in g:20px;background:#f9fafb;border-radius:8px;">
+<divstyle="font-size:2em;font-weight:bold;color:#fbbf24;">₹{{ total_earn in gs|floatformat:0 }}</div>
+<divstyle="color:#666;marg in -top:8px;">TotalEarn in gs</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

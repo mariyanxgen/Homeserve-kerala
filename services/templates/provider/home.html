@@ -1,0 +1,404 @@
+{% extends 'frontend/base.html' %}
+{% block title %}Provider Portal - {{ provider.business_name }}{% endblock %}
+{% block content %}
+<style>
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+body { 
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%),
+                url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80') center/cover fixed;
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 100vh;
+}
+
+.provider-portal { 
+    max-width: 1400px; 
+    margin: 0 auto; 
+    padding: 30px 20px;
+}
+
+.provider-header { 
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    color: white; 
+    padding: 40px 50px; 
+    border-radius: 16px; 
+    margin-bottom: 35px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.provider-header h1 { 
+    font-size: 2.2em; 
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.provider-header p {
+    opacity: 0.95;
+    font-size: 1.05em;
+}
+
+.nav-tabs { 
+    display: flex; 
+    gap: 8px; 
+    background: white; 
+    padding: 12px; 
+    border-radius: 12px; 
+    margin-bottom: 30px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.nav-tabs a { 
+    padding: 12px 24px; 
+    background: transparent; 
+    border-radius: 8px; 
+    text-decoration: none; 
+    color: #64748b; 
+    font-weight: 600; 
+    transition: all 0.2s ease;
+    font-size: 0.95em;
+}
+
+.nav-tabs a:hover { 
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.nav-tabs a.active { 
+    background: #1e40af; 
+    color: white;
+}
+
+.dashboard-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 24px; 
+    margin-bottom: 35px;
+}
+
+.stat-card { 
+    background: white;
+    padding: 28px; 
+    border-radius: 12px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+}
+
+.stat-value { 
+    font-size: 2.8em; 
+    font-weight: 700; 
+    color: #1e40af;
+    margin: 12px 0 8px 0;
+}
+
+.stat-label { 
+    color: #64748b; 
+    font-size: 0.95em;
+    font-weight: 500;
+}
+
+.section-card { 
+    background: white;
+    padding: 32px; 
+    border-radius: 12px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+    margin-bottom: 28px;
+    border: 1px solid #e5e7eb;
+}
+
+.section-title { 
+    font-size: 1.5em; 
+    margin-bottom: 24px; 
+    color: #1e293b; 
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.booking-item { 
+    padding: 20px; 
+    background: #f8fafc; 
+    border-radius: 10px; 
+    margin-bottom: 12px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    transition: all 0.2s;
+    border: 1px solid #e5e7eb;
+}
+
+.booking-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.badge { 
+    display: inline-block; 
+    padding: 6px 14px; 
+    border-radius: 6px; 
+    font-size: 0.85em; 
+    font-weight: 600;
+}
+
+.badge-pending { 
+    background: #fef3c7; 
+    color: #92400e;
+}
+
+.badge-confirmed { 
+    background: #d1fae5; 
+    color: #065f46;
+}
+
+.btn { 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: 600; 
+    text-decoration: none; 
+    display: inline-block;
+    transition: all 0.2s ease;
+    font-size: 0.95em;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary { 
+    background: #1e40af; 
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1e3a8a;
+}
+
+.btn-success { 
+    background: #059669; 
+    color: white;
+}
+
+.btn-success:hover {
+    background: #047857;
+}
+
+.alert { 
+    padding: 16px 20px; 
+    border-radius: 10px; 
+    margin-bottom: 24px;
+    border: 1px solid #bfdbfe;
+    background: #eff6ff;
+    color: #1e40af;
+    font-weight: 500;
+}
+
+.quick-action-grid {
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 24px;
+}
+
+.quick-action-card {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.quick-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-color: #cbd5e1;
+}
+
+.quick-action-icon {
+    font-size: 3em;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.quick-action-card h3 {
+    color: #1e293b;
+    margin: 12px 0 8px 0;
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+.quick-action-card p {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.95em;
+}
+</style>
+</style>
+
+<div class="provider-portal">
+    <!-- Header -->
+    <div class="provider-header">
+        <h1>Welcome, {{ provider.business_name }}!</h1>
+        <p style="margin: 10px 0 0 0; font-size: 1.1em; opacity: 0.9;">
+            Your Provider Portal • {{ provider.city }}, {{ provider.state }}
+        </p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-tabs">
+        <a href="/provider/" class="active">Home</a>
+        <a href="/provider/services/">My Services</a>
+        <a href="/provider/bookings/">Bookings</a>
+        <a href="/provider/earnings/">Earnings</a>
+        <a href="/provider/messages/">Messages {% if unread_messages > 0 %}<span style="background: #ef4444; color: white; padding: 2px 8px; border-radius: 12px; margin-left: 5px;">{{ unread_messages }}</span>{% endif %}</a>
+        <a href="/provider/calendar/">Calendar</a>
+        <a href="/provider/reviews/">Reviews</a>
+        <a href="/provider/profile/">Profile</a>
+    </div>
+
+    {% if pending_bookings > 0 %}
+    <div class="alert alert-info">
+        <strong>Action Required:</strong> You have {{ pending_bookings }} pending booking{{ pending_bookings|pluralize }} waiting for your confirmation!
+        <a href="/provider/bookings/?status=pending" class="btn btn-primary" style="margin-left: 15px;">View Pending</a>
+    </div>
+    {% endif %}
+
+    <!-- Quick Stats -->
+    <div class="dashboard-grid">
+        <div class="stat-card">
+            <div class="stat-label">This Week Bookings</div>
+            <div class="stat-value">{{ this_week_bookings }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">This Week Earnings</div>
+            <div class="stat-value">₹{{ this_week_earnings|floatformat:0 }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pending Bookings</div>
+            <div class="stat-value">{{ pending_bookings }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Unread Messages</div>
+            <div class="stat-value">{{ unread_messages }}</div>
+        </div>
+    </div>
+
+    <!-- Today's Schedule -->
+    <div class="section-card">
+        <h2 class="section-title">Today's Schedule</h2>
+        {% if today_bookings %}
+            {% for booking in today_bookings %}
+            <div class="booking-item">
+                <div>
+                    <strong>{{ booking.booking_time }}</strong> - {{ booking.service.title }}
+                    <br><small style="color: #666;">Customer: {{ booking.customer_name }} • {{ booking.customer_phone }}</small>
+                </div>
+                <span class="badge {% if booking.status == 'pending' %}badge-pending{% else %}badge-confirmed{% endif %}">
+                    {{ booking.get_status_display }}
+                </span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; padding: 40px; color: #999;">
+                No bookings scheduled for today. Enjoy your day!
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- New Booking Requests -->
+    <div class="section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 class="section-title" style="margin: 0;">
+                <i class="fas fa-bell" style="color: #f59e0b; margin-right: 8px;"></i>
+                New Booking Requests
+            </h2>
+            <a href="/provider/bookings/?status=pending" style="color: #3b82f6; text-decoration: none; font-size: 14px;">
+                View All <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
+            </a>
+        </div>
+        {% if recent_pending %}
+            {% for booking in recent_pending %}
+            <div style="background: #fef3c7; border: 1px solid #fcd34d; padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                <div style="margin-bottom: 12px;">
+                    <h4 style="margin: 0 0 8px 0; color: #111827;">{{ booking.service.title }}</h4>
+                    <p style="margin: 0 0 8px 0; color: #4b5563; font-size: 14px;">
+                        <i class="fas fa-user" style="color: #9ca3af; margin-right: 4px;"></i>
+                        {{ booking.customer_name }}
+                        <span style="margin: 0 8px;">•</span>
+                        <i class="fas fa-phone" style="color: #9ca3af; margin-right: 4px;"></i>
+                        {{ booking.customer_phone }}
+                    </p>
+                    <div style="display: flex; gap: 16px; font-size: 14px; color: #4b5563;">
+                        <span>
+                            <i class="fas fa-calendar" style="color: #9ca3af; margin-right: 4px;"></i>
+                            {{ booking.booking_date }}
+                        </span>
+                        <span>
+                            <i class="fas fa-clock" style="color: #9ca3af; margin-right: 4px;"></i>
+                            {{ booking.booking_time|time:"g:i A" }}
+                        </span>
+                        <span>
+                            <i class="fas fa-rupee-sign" style="color: #9ca3af; margin-right: 4px;"></i>
+                            ₹{{ booking.total_amount }}
+                        </span>
+                    </div>
+                    {% if booking.notes %}
+                    <p style="margin: 8px 0 0 0; color: #4b5563; font-size: 14px; font-style: italic;">
+                        <i class="fas fa-comment" style="color: #9ca3af; margin-right: 4px;"></i>
+                        {{ booking.notes }}
+                    </p>
+                    {% endif %}
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <form action="{% url 'provider:confirm_booking' booking.id %}" method="POST" style="flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" style="width: 100%; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px;">
+                            <i class="fas fa-check" style="margin-right: 4px;"></i>
+                            Accept Booking
+                        </button>
+                    </form>
+                    <a href="{% url 'provider:booking_detail' booking.id %}" style="flex: 1; padding: 10px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px; text-align: center; font-weight: 500; font-size: 14px; display: inline-block;">
+                        <i class="fas fa-eye" style="margin-right: 4px;"></i>
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; padding: 40px; color: #999;">
+                <i class="fas fa-inbox" style="font-size: 48px; display: block; margin-bottom: 12px; color: #d1d5db;"></i>
+                No pending booking requests<br>
+                <small>You're all caught up!</small>
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-action-grid">
+        <a href="/provider/bookings/?status=pending" class="quick-action-card">
+            <h3>Pending Bookings</h3>
+            <p>Review and confirm</p>
+        </a>
+        <a href="/provider/services/" class="quick-action-card">
+            <h3>Manage Services</h3>
+            <p>Update your offerings</p>
+        </a>
+        <a href="/provider/earnings/" class="quick-action-card">
+            <h3>View Earnings</h3>
+            <p>Track your revenue</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

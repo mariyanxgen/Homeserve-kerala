@@ -1,0 +1,258 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}Booking Confirmation - HomeServe PRO{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmation-container {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 20px;
+    }
+    
+    .confirmation-card {
+        background: white;
+        padding: 50px;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        color: white;
+        font-size: 3rem;
+    }
+    
+    .confirmation-card h1 {
+        font-size: 2.2rem;
+        color: #1e293b;
+        margin-bottom: 15px;
+    }
+    
+    .confirmation-message {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+    }
+    
+    .booking-details {
+        background: #f8fafc;
+        padding: 30px;
+        border-radius: 12px;
+        margin: 30px 0;
+        text-align: left;
+    }
+    
+    .booking-id {
+        text-align: center;
+        font-size: 1.5rem;
+        color: #667eea;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+    
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .detail-item {
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+    }
+    
+    .detail-label {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .detail-value {
+        font-size: 1rem;
+        color: #1e293b;
+        word-break: break-word;
+    }
+    
+    .full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .next-steps {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        padding: 25px;
+        border-radius: 12px;
+        margin: 30px 0;
+        text-align: left;
+    }
+    
+    .next-steps h3 {
+        color: #1e40af;
+        margin-bottom: 15px;
+    }
+    
+    .next-steps ul {
+        margin-left: 20px;
+        color: #475569;
+    }
+    
+    .next-steps li {
+        margin-bottom: 10px;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    @media (max-width: 768px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .confirmation-card {
+            padding: 30px 20px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="confirmation-card">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        
+        <h1>Booking Confirmed!</h1>
+        <p class="confirmation-message">
+            Thank you for booking with HomeServe PRO. Your service request has been submitted successfully.
+        </p>
+        
+        <div class="booking-details">
+            <div class="booking-id">Booking ID: #{{ booking.id }}</div>
+            
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Service</div>
+                    <div class="detail-value">{{ booking.service.title }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Provider</div>
+                    <div class="detail-value">{{ booking.provider.business_name }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Customer Name</div>
+                    <div class="detail-value">{{ booking.customer_name }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Contact Number</div>
+                    <div class="detail-value">{{ booking.customer_phone }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">{{ booking.customer_email }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        <span class="status-badge status-{{ booking.status }}">
+                            {{ booking.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Booking Date</div>
+                    <div class="detail-value">{{ booking.booking_date|date:"F d, Y" }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Booking Time</div>
+                    <div class="detail-value">{{ booking.booking_time|time:"g:i A" }}</div>
+                </div>
+                
+                <div class="detail-item full-width">
+                    <div class="detail-label">Service Address</div>
+                    <div class="detail-value">{{ booking.customer_address }}</div>
+                </div>
+                
+                {% if booking.notes %}
+                <div class="detail-item full-width">
+                    <div class="detail-label">Additional Notes</div>
+                    <div class="detail-value">{{ booking.notes }}</div>
+                </div>
+                {% endif %}
+                
+                <div class="detail-item">
+                    <div class="detail-label">Total Amount</div>
+                    <div class="detail-value" style="font-size: 1.5rem; color: #667eea; font-weight: 700;">
+                        ₹{{ booking.total_amount }}
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Emergency Service</div>
+                    <div class="detail-value">
+                        {% if booking.is_emergency %}
+                            <span style="color: #ef4444; font-weight: 600;">⚡ Yes</span>
+                        {% else %}
+                            No
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="next-steps">
+            <h3>📋 What happens next?</h3>
+            <ul>
+                <li>The service provider will review your booking request</li>
+                <li>You'll receive a confirmation call/email within 24 hours</li>
+                <li>Make sure to keep your phone accessible</li>
+                <li>Save your Booking ID (#{{ booking.id }}) for future reference</li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+            <a href="/services/" class="btn btn-primary">Browse More Services</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

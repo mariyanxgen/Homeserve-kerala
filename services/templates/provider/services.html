@@ -1,0 +1,142 @@
+{% extends 'frontend/base.html' %}
+{% block title %}My Services - Provider Portal{% endblock %}
+{% block content %}
+<style>
+body { 
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%),
+                url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80') center/cover fixed;
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 100vh;
+}
+.provider-portal { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+.nav-tabs { display: flex; gap: 8px; background: white; padding: 12px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
+.nav-tabs a { padding: 12px 24px; background: transparent; border-radius: 8px; text-decoration: none; color: #64748b; font-weight: 600; transition: all 0.2s ease; font-size: 0.95em; }
+.nav-tabs a:hover { background: #f1f5f9; color: #334155; }
+.nav-tabs a.active { background: #1e40af; color: white; }
+.section-card { background: white; padding: 32px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 28px; border: 1px solid #e5e7eb; }
+.section-title { font-size: 1.5em; margin-bottom: 24px; color: #1e293b; font-weight: 600; }
+.service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
+.service-card { background: #f8fafc; padding: 24px; border-radius: 10px; border: 1px solid #e5e7eb; transition: all 0.2s; }
+.service-card:hover { background: #f1f5f9; border-color: #cbd5e1; }
+.service-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+.service-title { font-size: 1.3em; font-weight: 600; color: #1e293b; margin: 0; }
+.service-price { font-size: 1.5em; color: #1e40af; font-weight: 700; }
+.service-meta { display: flex; gap: 15px; margin: 10px 0; color: #64748b; font-size: 0.95em; }
+.badge { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; font-weight: 600; }
+.badge-active { background: #d1fae5; color: #065f46; }
+.badge-inactive { background: #fee2e2; color: #991b1b; }
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-approved { background: #d1fae5; color: #065f46; }
+.badge-rejected { background: #fee2e2; color: #991b1b; }
+.btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; margin-right: 10px; transition: all 0.2s; font-size: 0.95em; }
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: #1e40af; color: white; }
+.btn-primary:hover { background: #1e3a8a; }
+.btn-secondary { background: #64748b; color: white; }
+.btn-secondary:hover { background: #475569; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 30px; }
+.stat-box { background: white; padding: 28px; border-radius: 12px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; transition: all 0.2s; }
+.stat-box:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.stat-value { font-size: 2.8em; font-weight: 700; color: #1e40af; margin: 12px 0 8px 0; }
+.stat-label { color: #64748b; font-size: 0.95em; font-weight: 500; }
+</style>
+
+<div class="provider-portal">
+    <!-- Navigation -->
+    <div class="nav-tabs">
+        <a href="/provider/">Home</a>
+        <a href="/provider/services/" class="active">My Services</a>
+        <a href="/provider/bookings/">Bookings</a>
+        <a href="/provider/earnings/">Earnings</a>
+        <a href="/provider/messages/">Messages</a>
+        <a href="/provider/calendar/">Calendar</a>
+        <a href="/provider/reviews/">Reviews</a>
+        <a href="/provider/profile/">Profile</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-value">{{ services.count }}</div>
+            <div class="stat-label">Total Services</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">{{ active_count }}</div>
+            <div class="stat-label">Active Services</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">{{ total_bookings }}</div>
+            <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value">₹{{ avg_price|floatformat:0 }}</div>
+            <div class="stat-label">Avg. Price</div>
+        </div>
+    </div>
+
+    <!-- Services List -->
+    <div class="section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h1 class="section-title" style="margin: 0;">My Services</h1>
+            <a href="/provider/services/add/" class="btn btn-primary">+ Add New Service</a>
+        </div>
+
+        {% if services %}
+        <div class="service-grid">
+            {% for service in services %}
+            <div class="service-card">
+                <div class="service-header">
+                    <div>
+                        <h3 class="service-title">{{ service.title }}</h3>
+                        <div style="margin-top: 5px;">
+                            <span class="badge badge-{{ service.approval_status }}">
+                                {% if service.approval_status == 'pending' %}Pending Approval
+                                {% elif service.approval_status == 'approved' %}Approved
+                                {% elif service.approval_status == 'rejected' %}Rejected
+                                {% endif %}
+                            </span>
+                            <span class="badge {% if service.is_active %}badge-active{% else %}badge-inactive{% endif %}" style="margin-left: 5px;">
+                                {% if service.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="service-price">₹{{ service.price }}</div>
+                </div>
+                
+                {% if service.approval_status == 'rejected' and service.rejection_reason %}
+                <div style="background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; margin: 10px 0; font-size: 0.9em;">
+                    <strong>Rejection Reason:</strong> {{ service.rejection_reason }}
+                </div>
+                {% endif %}
+                
+                <p style="color: #64748b; margin: 15px 0;">{{ service.description|truncatewords:20 }}</p>
+                
+                <div class="service-meta">
+                    <span>{{ service.duration }} min</span>
+                    <span>{{ service.location }}</span>
+                </div>
+                
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb;">
+                    <div style="display: flex; justify-content: space-between; color: #64748b; font-size: 0.9em;">
+                        <span>{{ service.rating|floatformat:1 }} rating</span>
+                        <span>{{ service.booking_count }} booking{{ service.booking_count|pluralize }}</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <a href="/provider/services/edit/{{ service.id }}/" class="btn btn-primary" style="font-size: 0.9em;">Edit</a>
+                    <a href="/provider/bookings/?service={{ service.id }}" class="btn btn-secondary" style="font-size: 0.9em;">View Bookings</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 60px; color: #64748b;">
+            <h3>No Services Yet</h3>
+            <p>Add your first service to start receiving bookings!</p>
+            <a href="/provider/services/add/" class="btn btn-primary" style="margin-top: 20px;">Add New Service</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,945 @@
+{% extends 'frontend/base.html' %}
+
+{% block extra_css %}
+<style>
+    * {
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    body {
+        background: 
+            url('https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=1920&h=1080&fit=crop&crop=center&q=80') center/cover no-repeat fixed;
+        position: relative;
+        min-height: 100vh;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(248, 250, 252, 0.55) 25%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.7) 100%);
+        background-size: 100% 100%;
+        z-index: -1;
+        opacity: 0.9;
+    }
+    
+    .hero {
+        /* Transparent to show body background */
+        background: transparent;
+        color: white;
+        padding: 140px 20px 140px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 1;
+        animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .hero::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 1;
+        animation: pulse 10s ease-in-out infinite reverse;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+    }
+    
+    .hero > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 12px 28px;
+        border-radius: 50px;
+        margin-bottom: 32px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-badge i {
+        margin-right: 8px;
+        color: #c4b5fd;
+    }
+    
+    .hero-title {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 4.2rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.4rem;
+        opacity: 0.92;
+        margin-bottom: 48px;
+        line-height: 1.7;
+        max-width: 850px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 400;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .search-form {
+        display: flex;
+        gap: 12px;
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 12px;
+        border-radius: 16px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+        position: relative;
+        z-index: 2;
+    }
+    
+    .search-input-wrapper {
+        position: relative;
+        flex: 1;
+    }
+    
+    .search-input-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+    
+    .search-form input,
+    .search-form select {
+        padding: 18px 18px 18px 44px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        flex: 1;
+        width: 100%;
+        font-family: inherit;
+        background: #f8fafc;
+    }
+    
+    .search-form input:focus,
+    .search-form select:focus {
+        outline: 2px solid #667eea;
+        background: white;
+    }
+    
+    .search-form input::placeholder {
+        color: #94a3b8;
+    }
+    
+    .search-form button {
+        padding: 18px 36px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        transition: all 0.25s;
+    }
+    
+    .search-form button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+    }
+    
+    .trust-section {
+        background: white;
+        padding: 48px 20px;
+        text-align: center;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .trust-items {
+        display: flex;
+        justify-content: center;
+        gap: 64px;
+        flex-wrap: wrap;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .trust-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .trust-item-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #667eea;
+    }
+    
+    .trust-item-label {
+        color: #64748b;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    
+    .services-section {
+        padding: 80px 20px;
+        position: relative;
+        background: transparent;
+    }
+    
+    .services-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: transparent;
+        z-index: 0;
+        opacity: 0;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 16px;
+        color: #ffffff;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .section-subtitle {
+        text-align: center;
+        color: #ffffff;
+        margin-bottom: 64px;
+        font-size: 1.1rem;
+        line-height: 1.7;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 500;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-top: 40px;
+    }
+    
+    .service-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 32px 24px;
+        text-align: left;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .service-card.plumbing {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.plumbing::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.plumbing > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.plumbing:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-card.electrical {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.electrical::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.electrical > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.electrical:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-card.cleaning {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1558618047-3c8c5d3eec2e?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.cleaning::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.cleaning > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.cleaning:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-card.painting {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.painting::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.painting > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.painting:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-card.pest-control {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.pest-control::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.pest-control > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.pest-control:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-card.landscaping {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.landscaping::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.landscaping > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.landscaping:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-card.carpentry {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.carpentry::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.carpentry > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.carpentry:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-card.ac-repair {
+        background: 
+            linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.92) 100%),
+            url('https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=600&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card.ac-repair::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(248, 250, 252, 0.15);
+        z-index: 1;
+    }
+    
+    .service-card.ac-repair > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .service-card.ac-repair:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-icon.ac-repair {
+        background: 
+            linear-gradient(135deg, rgba(224, 242, 254, 0.85) 0%, rgba(179, 229, 252, 0.8) 100%),
+            url('https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=400&fit=crop&crop=center') center/cover no-repeat;
+        border-color: #81d4fa;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-icon.plumbing {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-color: #90caf9;
+    }
+    
+    .service-icon.electrical {
+        background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+        border-color: #ffcc02;
+    }
+    
+    .service-icon.cleaning {
+        background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+        border-color: #a5d6a7;
+    }
+    
+    .service-icon.carpentry {
+        background: linear-gradient(135deg, #fbe9e7 0%, #ffccbc 100%);
+        border-color: #ffab91;
+    }
+    
+    .service-icon.painting {
+        background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        border-color: #ce93d8;
+    }
+    
+    .service-icon.pest-control {
+        background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+        border-color: #ef9a9a;
+    }
+    
+    .service-icon.landscaping {
+        background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+        border-color: #80cbc4;
+    }
+    
+    .service-icon.ac-repair::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(3, 169, 244, 0.1) 0%, transparent 70%);
+        animation: cooling 3s ease-in-out infinite;
+    }
+    
+    .service-icon.plumbing::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(33, 150, 243, 0.1) 0%, transparent 70%);
+        animation: flow 2.5s ease-in-out infinite;
+    }
+    
+    .service-icon.electrical::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 193, 7, 0.1) 0%, transparent 70%);
+        animation: spark 2s ease-in-out infinite;
+    }
+    
+    .service-icon.cleaning::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
+        animation: clean 3.5s ease-in-out infinite;
+    }
+    
+    .service-icon.carpentry::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 87, 34, 0.1) 0%, transparent 70%);
+        animation: craft 2.8s ease-in-out infinite;
+    }
+    
+    .service-icon.painting::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(156, 39, 176, 0.1) 0%, transparent 70%);
+        animation: paint 4s ease-in-out infinite;
+    }
+    
+    .service-icon.pest-control::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(244, 67, 54, 0.1) 0%, transparent 70%);
+        animation: protect 3.2s ease-in-out infinite;
+    }
+    
+    .service-icon.landscaping::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(0, 150, 136, 0.1) 0%, transparent 70%);
+        animation: grow 4.5s ease-in-out infinite;
+    }
+    
+    @keyframes cooling {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+        50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+    }
+    
+    @keyframes flow {
+        0%, 100% { transform: scale(1) translateY(0); opacity: 0.4; }
+        50% { transform: scale(1.05) translateY(-5px); opacity: 0.7; }
+    }
+    
+    @keyframes spark {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+        25% { transform: scale(1.1) rotate(90deg); opacity: 0.6; }
+        75% { transform: scale(1.05) rotate(270deg); opacity: 0.5; }
+    }
+    
+    @keyframes clean {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+        33% { transform: scale(1.08) rotate(120deg); opacity: 0.7; }
+        66% { transform: scale(1.03) rotate(240deg); opacity: 0.6; }
+    }
+    
+    @keyframes craft {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+        50% { transform: scale(1.12) rotate(180deg); opacity: 0.8; }
+    }
+    
+    @keyframes paint {
+        0%, 100% { transform: scale(1) translateX(0); opacity: 0.3; }
+        25% { transform: scale(1.05) translateX(-3px); opacity: 0.6; }
+        75% { transform: scale(1.03) translateX(3px); opacity: 0.5; }
+    }
+    
+    @keyframes protect {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+        50% { transform: scale(1.08) rotate(360deg); opacity: 0.7; }
+    }
+    
+    @keyframes grow {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+        33% { transform: scale(1.06) rotate(120deg); opacity: 0.6; }
+        66% { transform: scale(1.1) rotate(240deg); opacity: 0.8; }
+    }
+    
+    .service-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+        color: #1e293b;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    .service-card p {
+        color: #64748b;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        font-size: 0.9rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-weight: 400;
+    }
+    
+    .service-stats {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+    
+    .service-stats .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .service-stats .rating {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+    
+    .service-stats .rating i {
+        color: #fbbf24;
+        font-size: 0.75rem;
+    }
+    
+    .service-price-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 16px;
+        border-top: 1px solid #f1f5f9;
+    }
+    
+    .service-price {
+        font-size: 0.85rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+    
+    .service-arrow {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+    
+    .service-card:hover .service-arrow {
+        color: #667eea;
+        transform: translateX(4px);
+    }
+    
+    @media (max-width: 968px) {
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 640px) {
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+        .hero-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <div class="hero-badge">
+            <i class="fas fa-home"></i> Professional Home Services Platform
+        </div>
+        <h1 class="hero-title">Reliable Home Services, On-Demand</h1>
+        <p class="hero-subtitle">
+            Vetted professionals. Transparent pricing. Guaranteed quality.<br>
+            Your trusted partner for all home maintenance needs.
+        </p>
+        
+        <form action="/services/" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search for services...">
+            <select name="district">
+                <option value="">Select District</option>
+                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                <option value="Kochi">Kochi</option>
+                <option value="Kozhikode">Kozhikode</option>
+                <option value="Thrissur">Thrissur</option>
+                <option value="Kollam">Kollam</option>
+            </select>
+            <button type="submit">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </form>
+    </div>
+</section>
+
+<section class="services-section">
+    <div class="container">
+        <h2 class="section-title">Our Service Categories</h2>
+        <p class="section-subtitle">Trusted professionals for every home service need. Quality guaranteed on every job.</p>
+        
+        <div class="services-grid">
+            {% for category in categories %}
+            {% if category.name == 'AC Repair' %}
+            <a href="/services/?category={{ category.id }}" class="service-card ac-repair">
+            {% elif category.name == 'Carpentry' %}
+            <a href="/services/?category={{ category.id }}" class="service-card carpentry">
+            {% elif category.name == 'Plumbing' %}
+            <a href="/services/?category={{ category.id }}" class="service-card plumbing">
+            {% elif category.name == 'Electrical' %}
+            <a href="/services/?category={{ category.id }}" class="service-card electrical">
+            {% elif category.name == 'Cleaning' %}
+            <a href="/services/?category={{ category.id }}" class="service-card cleaning">
+            {% elif category.name == 'Painting' %}
+            <a href="/services/?category={{ category.id }}" class="service-card painting">
+            {% elif category.name == 'Pest Control' %}
+            <a href="/services/?category={{ category.id }}" class="service-card pest-control">
+            {% elif category.name == 'Landscaping' %}
+            <a href="/services/?category={{ category.id }}" class="service-card landscaping">
+            {% else %}
+            <a href="/services/?category={{ category.id }}" class="service-card">
+            {% endif %}
+                {% if category.name == 'Plumbing' %}
+                <div class="service-icon plumbing">
+                    <i class="fas fa-wrench" style="color: #64748b;"></i>
+                </div>
+                {% elif category.name == 'Electrical' %}
+                <div class="service-icon electrical">
+                    <i class="fas fa-bolt" style="color: #64748b;"></i>
+                </div>
+                {% elif category.name == 'Cleaning' %}
+                <div class="service-icon cleaning">
+                    <i class="fas fa-sparkles" style="color: #64748b;"></i>
+                </div>
+                {% elif category.name == 'Carpentry' %}
+                <div class="service-icon carpentry">
+                    <i class="fas fa-hammer" style="color: #64748b;"></i>
+                </div>
+                {% elif category.name == 'Painting' %}
+                <div class="service-icon painting">
+                    <i class="fas fa-paint-roller" style="color: #64748b;"></i>
+                </div>
+                {% elif category.name == 'AC Repair' %}
+                <div class="service-icon ac-repair">
+                    <i class="fas fa-snowflake" style="color: #64748b;"></i>
+                </div>
+                {% elif category.name == 'Pest Control' %}
+                <div class="service-icon pest-control">
+                    <i class="fas fa-shield-alt" style="color: #64748b;"></i>
+                </div>
+                {% elif category.name == 'Landscaping' %}
+                <div class="service-icon landscaping">
+                    <i class="fas fa-seedling" style="color: #64748b;"></i>
+                </div>
+                {% else %}
+                <div class="service-icon">
+                    <i class="fas fa-cog" style="color: #475569;"></i>
+                </div>
+                {% endif %}
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description|truncatewords:10 }}</p>
+                <div class="service-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-tools"></i>
+                        <span>{{ category.service_count }} services</span>
+                    </div>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <span>4.8</span>
+                    </div>
+                </div>
+                <div class="service-price-section">
+                    {% if category.name == 'Plumbing' %}
+                    <span class="service-price">Licensed master plumbers</span>
+                    {% elif category.name == 'Electrical' %}
+                    <span class="service-price">Certified electricians</span>
+                    {% elif category.name == 'Cleaning' %}
+                    <span class="service-price">Professional cleaning crews</span>
+                    {% elif category.name == 'Carpentry' %}
+                    <span class="service-price">Skilled craftsmen available</span>
+                    {% elif category.name == 'Painting' %}
+                    <span class="service-price">Expert painters & decorators</span>
+                    {% elif category.name == 'AC Repair' %}
+                    <span class="service-price">Certified HVAC technicians</span>
+                    {% elif category.name == 'Pest Control' %}
+                    <span class="service-price">Licensed pest specialists</span>
+                    {% elif category.name == 'Landscaping' %}
+                    <span class="service-price">Professional landscapers</span>
+                    {% else %}
+                    <span class="service-price">Professional services available</span>
+                    {% endif %}
+                    <i class="fas fa-arrow-right service-arrow"></i>
+                </div>
+            </a>
+            {% empty %}
+            <p style="grid-column: 1 / -1; text-align: center; color: #64748b;">No categories available</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

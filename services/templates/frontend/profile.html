@@ -1,0 +1,156 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}My Profile - HomeServe PRO{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 20px;
+    }
+    
+    .profile-card {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .profile-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+    }
+    
+    .profile-header h1 {
+        font-size: 2rem;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+    
+    .profile-header p {
+        color: #64748b;
+    }
+    
+    .profile-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .info-item {
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 12px;
+    }
+    
+    .info-label {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+    
+    .info-value {
+        font-size: 1.1rem;
+        color: #1e293b;
+    }
+    
+    .profile-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .logout-form {
+        display: inline;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-info {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {{ user.username|slice:":1"|upper }}
+            </div>
+            <h1>{{ user.username }}</h1>
+            <p>Member since {{ user.date_joined|date:"F Y" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <div class="info-item">
+                <div class="info-label">Username</div>
+                <div class="info-value">{{ user.username }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ user.email|default:"Not provided" }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">First Name</div>
+                <div class="info-value">{{ user.first_name|default:"Not set" }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">Last Name</div>
+                <div class="info-value">{{ user.last_name|default:"Not set" }}</div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">Account Status</div>
+                <div class="info-value">
+                    {% if user.is_active %}
+                        <span style="color: #10b981;">✓ Active</span>
+                    {% else %}
+                        <span style="color: #ef4444;">✗ Inactive</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-label">Last Login</div>
+                <div class="info-value">{{ user.last_login|date:"M d, Y H:i" }}</div>
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <a href="/" class="btn btn-secondary">Browse Services</a>
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
