@@ -70,7 +70,7 @@ for provider in providers:
                     'description': desc,
                     'price': Decimal(price),
                     'duration_minutes': 60,
-                    'is_available': True,
+                    'is_active': True,
                     'approval_status': 'approved',
                 }
             )
