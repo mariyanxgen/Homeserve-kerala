@@ -202,3 +202,14 @@ print(f"Total providers in database: {ServiceProvider.objects.count()}")
 print(f"Total services in database: {Service.objects.count()}")
 print(f"Total categories: {ServiceCategory.objects.filter(is_active=True).count()}")
 print(f"\nProviders are spread across: {', '.join(kerala_districts[:8])}, and more!")
+
+print("\n" + "="*60)
+print("🔑 PROVIDER LOGIN CREDENTIALS")
+print("="*60)
+print("\nAll providers use password: password123\n")
+print("USERNAME                      | BUSINESS NAME              | DISTRICT")
+print("-" * 80)
+for business_name, district, city, pincode, exp, bio in providers_data:
+    username = business_name.lower().replace(' ', '_')[:30]
+    print(f"{username:30s} | {business_name:27s} | {district}")
+print("="*60)
