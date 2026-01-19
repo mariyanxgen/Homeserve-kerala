@@ -64,7 +64,7 @@ for provider in providers:
         for service_name, category_name, price, desc in services_data[provider.business_name]:
             service, created = Service.objects.get_or_create(
                 provider=provider,
-                name=service_name,
+                title=service_name,
                 defaults={
                     'category': categories.get(category_name),
                     'description': desc,
