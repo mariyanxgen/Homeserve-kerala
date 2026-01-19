@@ -267,13 +267,7 @@ This project demonstrates proficiency in:
 
 MIT License - Feel free to use for learning and portfolio purposes
 
-## 👤 Author
 
-**[Your Name]**
-- Portfolio: [Your Portfolio URL]
-- LinkedIn: [Your LinkedIn]
-- GitHub: [Your GitHub]
-- Email: [Your Email]
 
 ## 🙏 Acknowledgments
 
