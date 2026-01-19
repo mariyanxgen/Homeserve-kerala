@@ -25,10 +25,10 @@ SECRET_KEY = 'django-insecure-i5usfein%x!f_e_53h+m=8oj9&yv4=bequ!(qzzuzk=-agv@m8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'mariyaj.pythonanywhere.com']
 
 # CSRF Settings
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000', 'https://mariyaj.pythonanywhere.com']
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SECURE = False
