@@ -27,8 +27,11 @@ categories = {}
 for name, desc in categories_data:
     cat, created = ServiceCategory.objects.get_or_create(
         name=name,
-        defaults={'description': desc}
+        defaults={'description': desc, 'is_active': True}
     )
+    if not created and not cat.is_active:
+        cat.is_active = True
+        cat.save()
     categories[name] = cat
     if created:
         print(f"   ✓ Created category: {name}")
