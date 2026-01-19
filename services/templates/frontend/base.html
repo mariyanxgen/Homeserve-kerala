@@ -218,6 +218,7 @@
                 <li><a href="/services/">Services</a></li>
                 <li><a href="/how-it-works/">How It Works</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="/dashboard/customer/">My Bookings</a></li>
                     <li><a href="/profile/">Profile</a></li>
                     <li>
                         <form method="post" action="{% url 'logout' %}" style="display: inline;">
