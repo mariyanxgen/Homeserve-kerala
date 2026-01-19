@@ -207,6 +207,29 @@ def edit_service(request, service_id):
 
 @login_required
 @provider_required
+def delete_service(request, service_id):
+    """Delete a service"""
+    from django.contrib import messages as django_messages
+    
+    provider = request.user.provider_profile
+    service = get_object_or_404(Service, id=service_id, provider=provider)
+    
+    if request.method == 'POST':
+        service_title = service.title
+        service.delete()
+        django_messages.success(request, f'Service "{service_title}" deleted successfully!')
+        return redirect('/provider/services/')
+    
+    # If GET request, show confirmation page
+    context = {
+        'provider': provider,
+        'service': service,
+    }
+    return render(request, 'provider/delete_service_confirm.html', context)
+
+
+@login_required
+@provider_required
 def provider_bookings(request):
     """Manage all bookings"""
     provider = request.user.provider_profile

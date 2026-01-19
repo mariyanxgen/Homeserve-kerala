@@ -39,9 +39,38 @@ body {
 .stat-box:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); }
 .stat-value { font-size: 2.8em; font-weight: 700; color: #1e40af; margin: 12px 0 8px 0; }
 .stat-label { color: #64748b; font-size: 0.95em; font-weight: 500; }
+
+/* Delete Form Styles */
+.delete-form { display: inline; }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
 </style>
 
+<script>
+function confirmDelete(serviceId, serviceTitle) {
+    if (confirm(`Are you sure you want to delete "${serviceTitle}"? This action cannot be undone.`)) {
+        // Create and submit form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/provider/services/delete/${serviceId}/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken.value;
+            form.appendChild(csrfInput);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+
 <div class="provider-portal">
+    {% csrf_token %}
     <!-- Navigation -->
     <div class="nav-tabs">
         <a href="/provider/">Home</a>
@@ -53,6 +82,15 @@ body {
         <a href="/provider/reviews/">Reviews</a>
         <a href="/provider/profile/">Profile</a>
     </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" style="background: {% if message.tags == 'success' %}#d1fae5{% elif message.tags == 'error' %}#fee2e2{% else %}#dbeafe{% endif %}; color: {% if message.tags == 'success' %}#065f46{% elif message.tags == 'error' %}#991b1b{% else %}#1e40af{% endif %}; padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid {% if message.tags == 'success' %}#059669{% elif message.tags == 'error' %}#dc2626{% else %}#3b82f6{% endif %};">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <!-- Stats -->
     <div class="stats-row">
@@ -126,6 +164,7 @@ body {
                 <div style="margin-top: 15px;">
                     <a href="/provider/services/edit/{{ service.id }}/" class="btn btn-primary" style="font-size: 0.9em;">Edit</a>
                     <a href="/provider/bookings/?service={{ service.id }}" class="btn btn-secondary" style="font-size: 0.9em;">View Bookings</a>
+                    <button onclick="confirmDelete('{{ service.id }}', '{{ service.title|escapejs }}')" class="btn" style="background: #dc2626; color: white; font-size: 0.9em; border: none;">Delete</button>
                 </div>
             </div>
             {% endfor %}
